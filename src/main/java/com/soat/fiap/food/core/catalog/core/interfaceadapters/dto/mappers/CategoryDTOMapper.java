@@ -7,7 +7,7 @@ import com.soat.fiap.food.core.catalog.core.domain.model.Category;
 import com.soat.fiap.food.core.catalog.core.domain.vo.ImageUrl;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.CategoryDTO;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.ProductDTO;
-import com.soat.fiap.food.core.catalog.shared.core.domain.vo.AuditInfo;
+import com.soat.fiap.food.core.shared.core.domain.vo.AuditInfo;
 
 /**
  * Mapper responsável por mapear entre a entidade de domínio Category e seu

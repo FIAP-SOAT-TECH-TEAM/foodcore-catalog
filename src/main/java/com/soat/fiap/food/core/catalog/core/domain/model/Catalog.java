@@ -10,8 +10,8 @@ import com.soat.fiap.food.core.catalog.core.domain.exceptions.CatalogException;
 import com.soat.fiap.food.core.catalog.core.domain.exceptions.CategoryConflictException;
 import com.soat.fiap.food.core.catalog.core.domain.exceptions.CategoryNotFoundException;
 import com.soat.fiap.food.core.catalog.core.domain.exceptions.ProductNotFoundException;
-import com.soat.fiap.food.core.catalog.shared.core.domain.exceptions.BusinessException;
-import com.soat.fiap.food.core.catalog.shared.core.domain.vo.AuditInfo;
+import com.soat.fiap.food.core.shared.core.domain.exceptions.BusinessException;
+import com.soat.fiap.food.core.shared.core.domain.vo.AuditInfo;
 
 import lombok.Data;
 

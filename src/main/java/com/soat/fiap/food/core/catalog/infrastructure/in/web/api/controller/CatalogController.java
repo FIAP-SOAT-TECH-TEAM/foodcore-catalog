@@ -2,14 +2,13 @@ package com.soat.fiap.food.core.catalog.infrastructure.in.web.api.controller;
 
 import java.util.List;
 
-import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.web.api.catalog.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import com.soat.fiap.food.core.catalog.catalog.core.interfaceadapters.bff.controller.web.api.catalog.*;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.web.api.catalog.*;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.requests.CatalogRequest;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.responses.CatalogResponse;

@@ -3,9 +3,9 @@ package com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.we
 import com.soat.fiap.food.core.catalog.core.application.inputs.ProductStockUpdateInput;
 import com.soat.fiap.food.core.catalog.core.application.inputs.mappers.ProductStockUpdateMapper;
 import com.soat.fiap.food.core.catalog.core.application.usecases.product.UpdateProductStockForCreatedItemsUseCase;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.OrderCreatedEventDto;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.CatalogGateway;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.dto.events.OrderCreatedEventDto;
 
 import lombok.extern.slf4j.Slf4j;
 

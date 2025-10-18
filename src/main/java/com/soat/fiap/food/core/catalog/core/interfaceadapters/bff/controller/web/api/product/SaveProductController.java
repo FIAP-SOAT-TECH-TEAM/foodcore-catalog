@@ -2,18 +2,15 @@ package com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.we
 
 import com.soat.fiap.food.core.catalog.core.application.inputs.mappers.ProductMapper;
 import com.soat.fiap.food.core.catalog.core.application.usecases.product.AddProductToCategoryUseCase;
-import com.soat.fiap.food.core.catalog.core.application.usecases.product.PublishProductCreatedEventUseCase;
 import com.soat.fiap.food.core.catalog.core.application.usecases.product.UpdateProductImageInCategoryUseCase;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.presenter.web.api.ProductPresenter;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.CatalogGateway;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.requests.ProductRequest;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.responses.ProductResponse;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.dto.FileUploadDTO;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.gateways.EventPublisherGateway;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.gateways.ImageStorageGateway;
-import com.soat.fiap.food.core.catalog.shared.infrastructure.common.source.EventPublisherSource;
-import com.soat.fiap.food.core.catalog.shared.infrastructure.common.source.ImageDataSource;
+import com.soat.fiap.food.core.shared.core.interfaceadapters.dto.FileUploadDTO;
+import com.soat.fiap.food.core.shared.core.interfaceadapters.gateways.ImageStorageGateway;
+import com.soat.fiap.food.core.shared.infrastructure.common.source.ImageDataSource;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,17 +33,13 @@ public class SaveProductController {
 	 *            Origem de dados para o gateway de catálogo
 	 * @param imageDataSource
 	 *            Origem de dados para o gateway de imagens
-	 * @param eventPublisherSource
-	 *            Origem de publicação de eventos
 	 * @return Produto salvo com identificadores atualizados
 	 */
 	public static ProductResponse saveProduct(Long catalogId, ProductRequest productRequest, FileUploadDTO imageFile,
-			CatalogDataSource catalogDataSource, ImageDataSource imageDataSource,
-			EventPublisherSource eventPublisherSource) {
+			CatalogDataSource catalogDataSource, ImageDataSource imageDataSource) {
 
 		var gateway = new CatalogGateway(catalogDataSource);
 		var imageStorageGateway = new ImageStorageGateway(imageDataSource);
-		var eventPublisherGateway = new EventPublisherGateway(eventPublisherSource);
 
 		var productInput = ProductMapper.toInput(productRequest);
 
@@ -62,8 +55,6 @@ public class SaveProductController {
 			savedCatalog = gateway.save(updatedCatalog);
 			savedProduct = savedCatalog.getLastProductOfCategory(productRequest.getCategoryId());
 		}
-
-		PublishProductCreatedEventUseCase.publishProductCreatedEvent(savedProduct, eventPublisherGateway);
 
 		log.debug("Produto criado com sucesso: {}", savedProduct.getId());
 

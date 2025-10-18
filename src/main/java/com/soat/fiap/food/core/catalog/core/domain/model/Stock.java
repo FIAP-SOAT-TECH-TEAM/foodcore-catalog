@@ -3,8 +3,8 @@ package com.soat.fiap.food.core.catalog.core.domain.model;
 import java.time.LocalDateTime;
 
 import com.soat.fiap.food.core.catalog.core.domain.exceptions.StockException;
-import com.soat.fiap.food.core.catalog.shared.core.domain.exceptions.BusinessException;
-import com.soat.fiap.food.core.catalog.shared.core.domain.vo.AuditInfo;
+import com.soat.fiap.food.core.shared.core.domain.exceptions.BusinessException;
+import com.soat.fiap.food.core.shared.core.domain.vo.AuditInfo;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

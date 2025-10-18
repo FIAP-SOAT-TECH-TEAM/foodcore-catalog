@@ -1,6 +1,6 @@
 package com.soat.fiap.food.core.catalog.core.domain.exceptions;
 
-import com.soat.fiap.food.core.catalog.shared.core.domain.exceptions.ResourceConflictException;
+import com.soat.fiap.food.core.shared.core.domain.exceptions.ResourceConflictException;
 
 /**
  * Exceção lançada quando um conflito referente a entidade catalogo é encontrada

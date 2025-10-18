@@ -6,7 +6,7 @@ import java.util.Objects;
 import com.soat.fiap.food.core.catalog.core.domain.model.Catalog;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.CatalogDTO;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.CategoryDTO;
-import com.soat.fiap.food.core.catalog.shared.core.domain.vo.AuditInfo;
+import com.soat.fiap.food.core.shared.core.domain.vo.AuditInfo;
 
 /**
  * Mapper responsável por mapear entre a entidade de domínio Catalog e seu

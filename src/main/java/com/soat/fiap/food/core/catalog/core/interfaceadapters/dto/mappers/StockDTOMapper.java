@@ -2,7 +2,7 @@ package com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.mappers;
 
 import com.soat.fiap.food.core.catalog.core.domain.model.Stock;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.StockDTO;
-import com.soat.fiap.food.core.catalog.shared.core.domain.vo.AuditInfo;
+import com.soat.fiap.food.core.shared.core.domain.vo.AuditInfo;
 
 /**
  * Mapper responsável por mapear entre a entidade de domínio Stock e seu

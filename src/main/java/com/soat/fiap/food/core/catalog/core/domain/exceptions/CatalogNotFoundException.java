@@ -1,6 +1,6 @@
 package com.soat.fiap.food.core.catalog.core.domain.exceptions;
 
-import com.soat.fiap.food.core.catalog.shared.core.domain.exceptions.ResourceNotFoundException;
+import com.soat.fiap.food.core.shared.core.domain.exceptions.ResourceNotFoundException;
 
 /**
  * Exceção lançada quando um catalogo não é encontrado

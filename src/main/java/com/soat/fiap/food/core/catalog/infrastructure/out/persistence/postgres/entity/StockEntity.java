@@ -1,6 +1,6 @@
 package com.soat.fiap.food.core.catalog.infrastructure.out.persistence.postgres.entity;
 
-import com.soat.fiap.food.core.catalog.shared.core.domain.vo.AuditInfo;
+import com.soat.fiap.food.core.shared.core.domain.vo.AuditInfo;
 
 import jakarta.persistence.*;
 import lombok.Getter;

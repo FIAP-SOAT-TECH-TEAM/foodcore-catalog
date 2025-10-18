@@ -8,9 +8,9 @@ import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.CatalogGa
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.requests.CategoryRequest;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.responses.CategoryResponse;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.dto.FileUploadDTO;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.gateways.ImageStorageGateway;
-import com.soat.fiap.food.core.catalog.shared.infrastructure.common.source.ImageDataSource;
+import com.soat.fiap.food.core.shared.core.interfaceadapters.dto.FileUploadDTO;
+import com.soat.fiap.food.core.shared.core.interfaceadapters.gateways.ImageStorageGateway;
+import com.soat.fiap.food.core.shared.infrastructure.common.source.ImageDataSource;
 
 import lombok.extern.slf4j.Slf4j;
 

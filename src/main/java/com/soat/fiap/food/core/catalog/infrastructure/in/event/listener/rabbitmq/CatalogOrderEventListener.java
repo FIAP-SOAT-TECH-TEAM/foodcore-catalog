@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.web.api.product.UpdateProductStockForCanceledItemsController;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.web.api.product.UpdateProductStockForCreatedItemsController;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.OrderCanceledEventDto;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.OrderCreatedEventDto;
+import com.soat.fiap.food.core.catalog.infrastructure.common.event.rabbitmq.config.RabbitMqQueueConfig;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.dto.events.OrderCanceledEventDto;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.dto.events.OrderCreatedEventDto;
-import com.soat.fiap.food.core.catalog.shared.infrastructure.out.event.publisher.rabbitmq.config.RabbitMqQueueConfig;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -8,8 +8,8 @@ import com.soat.fiap.food.core.catalog.core.domain.exceptions.CatalogException;
 import com.soat.fiap.food.core.catalog.core.domain.exceptions.ProductException;
 import com.soat.fiap.food.core.catalog.core.domain.vo.Details;
 import com.soat.fiap.food.core.catalog.core.domain.vo.ImageUrl;
-import com.soat.fiap.food.core.catalog.shared.core.domain.exceptions.BusinessException;
-import com.soat.fiap.food.core.catalog.shared.core.domain.vo.AuditInfo;
+import com.soat.fiap.food.core.shared.core.domain.exceptions.BusinessException;
+import com.soat.fiap.food.core.shared.core.domain.vo.AuditInfo;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -11,8 +11,8 @@ import com.soat.fiap.food.core.catalog.core.domain.model.Category;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.CategoryDTO;
 import com.soat.fiap.food.core.catalog.infrastructure.out.persistence.postgres.entity.CategoryEntity;
 import com.soat.fiap.food.core.catalog.infrastructure.out.persistence.postgres.mapper.shared.ImageURLMapper;
-import com.soat.fiap.food.core.catalog.shared.infrastructure.common.mapper.CycleAvoidingMappingContext;
-import com.soat.fiap.food.core.catalog.shared.infrastructure.common.mapper.DoIgnore;
+import com.soat.fiap.food.core.shared.infrastructure.common.mapper.CycleAvoidingMappingContext;
+import com.soat.fiap.food.core.shared.infrastructure.common.mapper.DoIgnore;
 
 /**
  * Mapper que converte entre a entidade de domínio Category e a entidade JPA
@@ -42,7 +42,7 @@ public interface CategoryEntityMapper {
 	 *            Contexto para evitar ciclos
 	 * @return Entidade de domínio
 	 */
-	@Mapping(target = "auditInfo", expression = "java(com.soat.fiap.food.core.api.shared.infrastructure.common.mapper.AuditInfoMapper.buildAuditInfo(entity.getAuditInfo().getCreatedAt(), entity.getAuditInfo().getUpdatedAt()))")
+	@Mapping(target = "auditInfo", expression = "java(com.soat.fiap.food.core.shared.infrastructure.common.mapper.AuditInfoMapper.buildAuditInfo(entity.getAuditInfo().getCreatedAt(), entity.getAuditInfo().getUpdatedAt()))")
 	Category toDomain(CategoryEntity entity, @Context CycleAvoidingMappingContext cycleAvoidingMappingContext);
 
 	/**
@@ -54,7 +54,7 @@ public interface CategoryEntityMapper {
 	 *            Contexto para evitar ciclos
 	 * @return Lista de entidades de domínio
 	 */
-	@Mapping(target = "auditInfo", expression = "java(com.soat.fiap.food.core.api.shared.infrastructure.common.mapper.AuditInfoMapper.buildAuditInfo(entities.getAuditInfo().getCreatedAt(), entities.getAuditInfo().getUpdatedAt()))")
+	@Mapping(target = "auditInfo", expression = "java(com.soat.fiap.food.core.shared.infrastructure.common.mapper.AuditInfoMapper.buildAuditInfo(entities.getAuditInfo().getCreatedAt(), entities.getAuditInfo().getUpdatedAt()))")
 	List<Category> toDomainList(List<CategoryEntity> entities,
 			@Context CycleAvoidingMappingContext cycleAvoidingMappingContext);
 
@@ -67,7 +67,7 @@ public interface CategoryEntityMapper {
 	 */
 	@Mapping(target = "imageUrl", source = "imageUrl", qualifiedByName = "mapStringToImageUrl")
 	@Mapping(target = "catalog", ignore = true)
-	@Mapping(target = "auditInfo", expression = "java(com.soat.fiap.food.core.api.shared.infrastructure.common.mapper.AuditInfoMapper.buildAuditInfo(dto.createdAt(), dto.updatedAt()))")
+	@Mapping(target = "auditInfo", expression = "java(com.soat.fiap.food.core.shared.infrastructure.common.mapper.AuditInfoMapper.buildAuditInfo(dto.createdAt(), dto.updatedAt()))")
 	CategoryEntity toEntity(CategoryDTO dto, @Context CycleAvoidingMappingContext cycleAvoidingMappingContext);
 
 	@DoIgnore

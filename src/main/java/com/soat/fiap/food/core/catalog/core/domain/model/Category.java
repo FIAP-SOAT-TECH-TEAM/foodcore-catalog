@@ -12,8 +12,8 @@ import com.soat.fiap.food.core.catalog.core.domain.exceptions.ProductConflictExc
 import com.soat.fiap.food.core.catalog.core.domain.exceptions.ProductNotFoundException;
 import com.soat.fiap.food.core.catalog.core.domain.vo.Details;
 import com.soat.fiap.food.core.catalog.core.domain.vo.ImageUrl;
-import com.soat.fiap.food.core.catalog.shared.core.domain.exceptions.BusinessException;
-import com.soat.fiap.food.core.catalog.shared.core.domain.vo.AuditInfo;
+import com.soat.fiap.food.core.shared.core.domain.exceptions.BusinessException;
+import com.soat.fiap.food.core.shared.core.domain.vo.AuditInfo;
 
 import lombok.Getter;
 import lombok.Setter;

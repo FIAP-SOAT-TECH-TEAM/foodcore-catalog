@@ -3,8 +3,8 @@ package com.soat.fiap.food.core.catalog.core.application.usecases.category;
 import com.soat.fiap.food.core.catalog.core.domain.exceptions.CatalogNotFoundException;
 import com.soat.fiap.food.core.catalog.core.domain.model.Catalog;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.CatalogGateway;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.dto.FileUploadDTO;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.gateways.ImageStorageGateway;
+import com.soat.fiap.food.core.shared.core.interfaceadapters.dto.FileUploadDTO;
+import com.soat.fiap.food.core.shared.core.interfaceadapters.gateways.ImageStorageGateway;
 
 import lombok.extern.slf4j.Slf4j;
 

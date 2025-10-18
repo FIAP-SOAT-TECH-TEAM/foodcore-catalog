@@ -3,8 +3,8 @@ package com.soat.fiap.food.core.catalog.core.application.inputs.mappers;
 import java.util.List;
 
 import com.soat.fiap.food.core.catalog.core.application.inputs.ProductStockUpdateInput;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.dto.events.OrderItemCanceledEventDto;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.dto.events.OrderItemCreatedEventDto;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.OrderItemCanceledEventDto;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.OrderItemCreatedEventDto;
 
 /**
  * Classe utilitária responsável por mapear objetos entre diferentes camadas da

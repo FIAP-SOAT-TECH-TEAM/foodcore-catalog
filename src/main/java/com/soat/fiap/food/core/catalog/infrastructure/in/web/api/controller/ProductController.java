@@ -3,7 +3,6 @@ package com.soat.fiap.food.core.catalog.infrastructure.in.web.api.controller;
 import java.io.IOException;
 import java.util.List;
 
-import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.web.api.product.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,14 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.soat.fiap.food.core.catalog.catalog.core.interfaceadapters.bff.controller.web.api.product.*;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.web.api.product.*;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.ProductDataSource;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.requests.ProductRequest;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.responses.ProductResponse;
-import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.dto.FileUploadDTO;
-import com.soat.fiap.food.core.catalog.shared.infrastructure.common.source.EventPublisherSource;
-import com.soat.fiap.food.core.catalog.shared.infrastructure.common.source.ImageDataSource;
+import com.soat.fiap.food.core.shared.core.interfaceadapters.dto.FileUploadDTO;
+import com.soat.fiap.food.core.shared.infrastructure.common.source.ImageDataSource;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,14 +35,12 @@ public class ProductController {
 	private final CatalogDataSource catalogDataSource;
 	private final ProductDataSource productDataSource;
 	private final ImageDataSource imageDataSource;
-	private final EventPublisherSource eventPublisherSource;
 
 	public ProductController(CatalogDataSource catalogDataSource, ProductDataSource productDataSource,
-			ImageDataSource imageDataSource, EventPublisherSource eventPublisherSource) {
+			ImageDataSource imageDataSource) {
 		this.catalogDataSource = catalogDataSource;
 		this.productDataSource = productDataSource;
 		this.imageDataSource = imageDataSource;
-		this.eventPublisherSource = eventPublisherSource;
 	}
 
 	@PostMapping(value = "/{catalogId}/categories/products", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -67,7 +63,7 @@ public class ProductController {
 			imageUpload = new FileUploadDTO(imageFile.getOriginalFilename(), imageFile.getBytes());
 		}
 		ProductResponse response = SaveProductController.saveProduct(catalogId, request, imageUpload, catalogDataSource,
-				imageDataSource, eventPublisherSource);
+				imageDataSource);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
