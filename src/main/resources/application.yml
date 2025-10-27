@@ -16,11 +16,6 @@ spring:
       maximum-pool-size: 10
       minimum-idle: 5
 
-  # Spring Modulith
-  autoconfigure:
-    exclude:
-      - org.springframework.modulith.events.jdbc.JdbcEventPublicationAutoConfiguration
-
   # JPA / Hibernate
   jpa:
     hibernate:
