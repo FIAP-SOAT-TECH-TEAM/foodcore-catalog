@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
-import com.soat.fiap.food.core.catalog.infrastructure.in.event.listener.rabbitmq.CatalogOrderEventListener;
 
 @ExtendWith(MockitoExtension.class) @DisplayName("CatalogOrderEventListener - Testes Unitários")
 class CatalogOrderEventListenerTest {
