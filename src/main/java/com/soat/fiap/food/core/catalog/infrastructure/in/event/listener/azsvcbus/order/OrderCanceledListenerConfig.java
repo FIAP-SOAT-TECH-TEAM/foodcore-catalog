@@ -16,13 +16,13 @@ import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataS
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Listener para eventos de pedido cancelado no módulo de catálogo via Azure
- * Service Bus.
+ * Listener responsável por processar eventos relacionados a pedidos cancelados
+ * recebidos pelo Azure Service Bus.
+ *
  * <p>
- * Este listener consome mensagens da fila
- * {@link ServiceBusConfig#ORDER_CANCELED_QUEUE}, processando eventos
- * {@link OrderCanceledEventDto} para restaurar o estoque dos produtos conforme
- * os itens do pedido cancelado.
+ * Ao receber um evento, este listener realiza o tratamento necessário no módulo
+ * de catálogo, conforme a lógica de negócio definida.
+ * </p>
  */
 @Configuration @Slf4j
 public class OrderCanceledListenerConfig {
@@ -30,16 +30,19 @@ public class OrderCanceledListenerConfig {
 	private final Gson gson = new Gson();
 
 	/**
-	 * Construtor do listener de eventos de pedido cancelado.
+	 * Cria o processador responsável por consumir mensagens de cancelamento de
+	 * pedido.
 	 *
 	 * @param catalogDataSource
 	 *            Fonte de dados do catálogo
 	 * @param connectionString
-	 *            Connection string do Azure Service Bus
+	 *            String de conexão do Azure Service Bus
+	 * @return Cliente processador configurado
 	 */
 	@Bean
 	public ServiceBusProcessorClient orderCanceledServiceBusProcessorClient(CatalogDataSource catalogDataSource,
 			@Value("${azsvcbus.connection-string}") String connectionString) {
+
 		return new ServiceBusClientBuilder().connectionString(connectionString)
 				.processor()
 				.queueName(ServiceBusConfig.ORDER_CANCELED_QUEUE)
@@ -49,12 +52,13 @@ public class OrderCanceledListenerConfig {
 							OrderCanceledEventDto.class);
 					handle(event, catalogDataSource);
 				})
-				.processError(context -> log.error("Erro no listener de pedido cancelado", context.getException()))
+				.processError(
+						context -> log.error("Erro ao processar evento de pedido cancelado", context.getException()))
 				.buildProcessorClient();
 	}
 
 	/**
-	 * Processa o evento de pedido cancelado, restaurando o estoque de produtos.
+	 * Executa o tratamento do evento recebido.
 	 *
 	 * @param event
 	 *            Evento de pedido cancelado
@@ -62,10 +66,10 @@ public class OrderCanceledListenerConfig {
 	 *            Fonte de dados do catálogo
 	 */
 	private void handle(OrderCanceledEventDto event, CatalogDataSource catalogDataSource) {
-		log.info("Módulo Catálogo: Notificado de cancelamento de pedido: {}", event.getId());
+		log.info("Evento de pedido cancelado recebido: {}", event.getId());
 
 		UpdateProductStockForCanceledItemsController.updateProductStockForCanceledItems(event, catalogDataSource);
 
-		log.info("Quantidade em estoque atualizada para: {} produtos.", event.getItems().size());
+		log.info("Processamento concluído para {} itens.", event.getItems().size());
 	}
 }

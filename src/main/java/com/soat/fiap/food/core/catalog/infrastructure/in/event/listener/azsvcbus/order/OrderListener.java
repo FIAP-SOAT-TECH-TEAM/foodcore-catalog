@@ -7,16 +7,27 @@ import com.azure.messaging.servicebus.ServiceBusProcessorClient;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Responsável por inicializar os processadores de eventos do módulo de
+ * catálogo.
+ *
+ * <p>
+ * Este componente garante que todos os listeners sejam iniciados
+ * automaticamente após o carregamento do contexto da aplicação.
+ * </p>
+ */
 @RequiredArgsConstructor @Component
 public class OrderListener {
 
 	private final ServiceBusProcessorClient catalogOrderCreatedTopicServiceBusProcessorClient;
 	private final ServiceBusProcessorClient orderCanceledServiceBusProcessorClient;
 
+	/**
+	 * Inicia os processadores configurados após a injeção de dependências.
+	 */
 	@PostConstruct
 	public void run() {
 		catalogOrderCreatedTopicServiceBusProcessorClient.start();
 		orderCanceledServiceBusProcessorClient.start();
 	}
-
 }

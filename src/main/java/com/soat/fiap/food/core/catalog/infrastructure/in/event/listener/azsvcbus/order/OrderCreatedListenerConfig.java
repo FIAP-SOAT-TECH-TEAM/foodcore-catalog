@@ -16,14 +16,13 @@ import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataS
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Listener para eventos de pedido criado no módulo de catálogo via Azure
- * Service Bus.
+ * Listener responsável por processar eventos relacionados a pedidos criados
+ * recebidos pelo Azure Service Bus.
+ *
  * <p>
- * Este listener consome mensagens do tópico
- * {@link ServiceBusConfig#ORDER_CREATED_TOPIC} e da subscription
- * {@link ServiceBusConfig#CATALOG_ORDER_CREATED_TOPIC_SUBSCRIPTION},
- * processando eventos {@link OrderCreatedEventDto} para atualizar o estoque dos
- * produtos de acordo com os itens do pedido.
+ * Este componente realiza o tratamento necessário no módulo de catálogo quando
+ * um novo pedido é criado.
+ * </p>
  */
 @Configuration @Slf4j
 public class OrderCreatedListenerConfig {
@@ -31,12 +30,13 @@ public class OrderCreatedListenerConfig {
 	private final Gson gson = new Gson();
 
 	/**
-	 * Construtor do listener de eventos de pedido criado.
+	 * Cria o processador responsável por consumir mensagens de criação de pedido.
 	 *
 	 * @param catalogDataSource
 	 *            Fonte de dados do catálogo
 	 * @param connectionString
-	 *            Connection string do Azure Service Bus
+	 *            String de conexão do Azure Service Bus
+	 * @return Cliente processador configurado
 	 */
 	@Bean
 	public ServiceBusProcessorClient catalogOrderCreatedTopicServiceBusProcessorClient(
@@ -52,12 +52,12 @@ public class OrderCreatedListenerConfig {
 							OrderCreatedEventDto.class);
 					handle(event, catalogDataSource);
 				})
-				.processError(context -> log.error("Erro no listener de pedido criado", context.getException()))
+				.processError(context -> log.error("Erro ao processar evento de pedido criado", context.getException()))
 				.buildProcessorClient();
 	}
 
 	/**
-	 * Processa o evento de pedido criado, atualizando o estoque de produtos.
+	 * Executa o tratamento do evento recebido.
 	 *
 	 * @param event
 	 *            Evento de pedido criado
@@ -65,10 +65,10 @@ public class OrderCreatedListenerConfig {
 	 *            Fonte de dados do catálogo
 	 */
 	private void handle(OrderCreatedEventDto event, CatalogDataSource catalogDataSource) {
-		log.info("Módulo Catálogo: Notificado de criação de pedido: {}", event.getId());
+		log.info("Evento de pedido criado recebido: {}", event.getId());
 
 		UpdateProductStockForCreatedItemsController.updateProductStockForCreatedItems(event, catalogDataSource);
 
-		log.info("Quantidade em estoque atualizada para: {} produtos.", event.getItems().size());
+		log.info("Processamento concluído para {} itens.", event.getItems().size());
 	}
 }
