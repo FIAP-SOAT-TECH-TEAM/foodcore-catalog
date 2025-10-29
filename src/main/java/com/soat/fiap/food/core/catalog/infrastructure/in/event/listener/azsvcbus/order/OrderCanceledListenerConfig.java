@@ -1,7 +1,8 @@
 package com.soat.fiap.food.core.catalog.infrastructure.in.event.listener.azsvcbus.order;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusProcessorClient;
@@ -23,8 +24,8 @@ import lombok.extern.slf4j.Slf4j;
  * {@link OrderCanceledEventDto} para restaurar o estoque dos produtos conforme
  * os itens do pedido cancelado.
  */
-@Component @Slf4j
-public class OrderCanceledListener {
+@Configuration @Slf4j
+public class OrderCanceledListenerConfig {
 
 	private final Gson gson = new Gson();
 
@@ -36,9 +37,10 @@ public class OrderCanceledListener {
 	 * @param connectionString
 	 *            Connection string do Azure Service Bus
 	 */
-	public OrderCanceledListener(CatalogDataSource catalogDataSource,
+	@Bean
+	public ServiceBusProcessorClient orderCanceledServiceBusProcessorClient(CatalogDataSource catalogDataSource,
 			@Value("${azsvcbus.connection-string}") String connectionString) {
-		try (ServiceBusProcessorClient processor = new ServiceBusClientBuilder().connectionString(connectionString)
+		return new ServiceBusClientBuilder().connectionString(connectionString)
 				.processor()
 				.queueName(ServiceBusConfig.ORDER_CANCELED_QUEUE)
 				.receiveMode(ServiceBusReceiveMode.PEEK_LOCK)
@@ -48,13 +50,7 @@ public class OrderCanceledListener {
 					handle(event, catalogDataSource);
 				})
 				.processError(context -> log.error("Erro no listener de pedido cancelado", context.getException()))
-				.buildProcessorClient()) {
-
-			processor.start();
-
-		} catch (Exception e) {
-			log.error("Falha ao iniciar OrderCanceledListener", e);
-		}
+				.buildProcessorClient();
 	}
 
 	/**

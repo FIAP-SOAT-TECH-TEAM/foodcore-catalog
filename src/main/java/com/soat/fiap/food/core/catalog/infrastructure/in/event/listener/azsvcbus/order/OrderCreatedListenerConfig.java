@@ -1,7 +1,8 @@
 package com.soat.fiap.food.core.catalog.infrastructure.in.event.listener.azsvcbus.order;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusProcessorClient;
@@ -24,8 +25,8 @@ import lombok.extern.slf4j.Slf4j;
  * processando eventos {@link OrderCreatedEventDto} para atualizar o estoque dos
  * produtos de acordo com os itens do pedido.
  */
-@Component @Slf4j
-public class OrderCreatedListener {
+@Configuration @Slf4j
+public class OrderCreatedListenerConfig {
 
 	private final Gson gson = new Gson();
 
@@ -37,10 +38,11 @@ public class OrderCreatedListener {
 	 * @param connectionString
 	 *            Connection string do Azure Service Bus
 	 */
-	public OrderCreatedListener(CatalogDataSource catalogDataSource,
-			@Value("${azsvcbus.connection-string}") String connectionString) {
+	@Bean
+	public ServiceBusProcessorClient catalogOrderCreatedTopicServiceBusProcessorClient(
+			CatalogDataSource catalogDataSource, @Value("${azsvcbus.connection-string}") String connectionString) {
 
-		try (ServiceBusProcessorClient processor = new ServiceBusClientBuilder().connectionString(connectionString)
+		return new ServiceBusClientBuilder().connectionString(connectionString)
 				.processor()
 				.topicName(ServiceBusConfig.ORDER_CREATED_TOPIC)
 				.subscriptionName(ServiceBusConfig.CATALOG_ORDER_CREATED_TOPIC_SUBSCRIPTION)
@@ -51,13 +53,7 @@ public class OrderCreatedListener {
 					handle(event, catalogDataSource);
 				})
 				.processError(context -> log.error("Erro no listener de pedido criado", context.getException()))
-				.buildProcessorClient()) {
-
-			processor.start();
-
-		} catch (Exception e) {
-			log.error("Falha ao iniciar OrderCreatedListener", e);
-		}
+				.buildProcessorClient();
 	}
 
 	/**
