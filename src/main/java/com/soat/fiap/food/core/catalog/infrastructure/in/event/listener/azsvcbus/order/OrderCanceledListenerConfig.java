@@ -7,12 +7,13 @@ import org.springframework.context.annotation.Configuration;
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusProcessorClient;
 import com.azure.messaging.servicebus.models.ServiceBusReceiveMode;
-import com.nimbusds.jose.shaded.gson.Gson;
+import com.google.gson.Gson;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.web.api.product.UpdateProductStockForCanceledItemsController;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.OrderCanceledEventDto;
 import com.soat.fiap.food.core.catalog.infrastructure.common.event.azsvcbus.config.ServiceBusConfig;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -24,10 +25,10 @@ import lombok.extern.slf4j.Slf4j;
  * de catálogo, conforme a lógica de negócio definida.
  * </p>
  */
-@Configuration @Slf4j
+@Configuration @Slf4j @RequiredArgsConstructor
 public class OrderCanceledListenerConfig {
 
-	private final Gson gson = new Gson();
+	private final Gson gson;
 
 	/**
 	 * Cria o processador responsável por consumir mensagens de cancelamento de
