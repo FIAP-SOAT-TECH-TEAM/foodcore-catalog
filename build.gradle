@@ -94,9 +94,9 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	// A Task generateOpenApiDocs é executada com Profile de teste, e precisa que a aplicação esteja em execução.
-	// Portanto, deixei como implementation para que seja incluída no classpath durante a execução.
+	// Portanto, deixei como runtimeOnly para que seja incluída no classpath durante a execução.
 	// https://github.com/springdoc/springdoc-openapi-gradle-plugin
-	implementation 'com.h2database:h2'
+	runtimeOnly 'com.h2database:h2'
 
 	// Liquibase runtime dependencies
 	liquibaseRuntime 'org.liquibase:liquibase-core'
@@ -185,16 +185,16 @@ liquibase {
 	activities {
 		main {
 			changeLogFile 'src/main/resources/db/changelog/db.changelog-master.yaml'
-			url 'jdbc:postgresql://localhost:', System.getenv('DB_PORT') ?: '5432', '/fastfood'
-			username 'postgres'
-			password 'postgres'
+			url System.getenv('SPRING_DATASOURCE_URL') ?: env.SPRING_DATASOURCE_URL.value
+			username System.getenv('SPRING_DATASOURCE_USERNAME') ?: env.SPRING_DATASOURCE_USERNAME.value
+			password System.getenv('SPRING_DATASOURCE_PASSWORD') ?: env.SPRING_DATASOURCE_PASSWORD.value
 		}
 	}
 	runList = 'main'
 }
 
 // Tarefa para copiar o driver PostgreSQL para uso em testes externos
-task extractDependencies(type: Copy) {
+tasks.register('extractDependencies', Copy) {
 	from configurations.runtimeClasspath
 	include '**/postgresql*.jar'
 	into "${buildDir}/dependencies"
