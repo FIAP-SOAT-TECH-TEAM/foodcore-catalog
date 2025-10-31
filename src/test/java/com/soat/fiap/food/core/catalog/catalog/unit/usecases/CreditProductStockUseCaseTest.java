@@ -41,8 +41,7 @@ class CreditProductStockUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput,
-				catalogGateway);
+		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput, catalogGateway);
 
 		// Assert
 		assertThat(result).isNotNull();
@@ -64,8 +63,7 @@ class CreditProductStockUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput,
-				catalogGateway);
+		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput, catalogGateway);
 
 		// Assert
 		assertThat(result).isNotNull();
@@ -87,8 +85,7 @@ class CreditProductStockUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput,
-				catalogGateway);
+		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput, catalogGateway);
 
 		// Assert
 		assertThat(result).isNotNull();
@@ -99,8 +96,7 @@ class CreditProductStockUseCaseTest {
 	@Test @DisplayName("Deve lançar exceção quando item de produto for nulo")
 	void shouldThrowExceptionWhenProductItemIsNull() {
 		// Act & Assert
-		assertThatThrownBy(
-				() -> CreditProductStockUseCase.updateStockForCanceledItem(null, catalogGateway))
+		assertThatThrownBy(() -> CreditProductStockUseCase.updateStockForCanceledItem(null, catalogGateway))
 				.isInstanceOf(OrderItemNotFoundException.class)
 				.hasMessage("Itens de pedido é nulo. Não é possível efetuar atualização de quantidade em estoque.");
 	}
@@ -114,8 +110,8 @@ class CreditProductStockUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.empty());
 
 		// Act & Assert
-		assertThatThrownBy(() -> CreditProductStockUseCase
-				.updateStockForCanceledItem(productStockItemInput, catalogGateway))
+		assertThatThrownBy(
+				() -> CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput, catalogGateway))
 				.isInstanceOf(CatalogNotFoundException.class)
 				.hasMessage(
 						"Catálogo do produto do item de pedido não encontrado. Não é possível atualizar quantidade em estoque.");
@@ -137,8 +133,7 @@ class CreditProductStockUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput,
-				catalogGateway);
+		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput, catalogGateway);
 
 		// Assert
 		assertThat(result).isNotNull();
@@ -160,8 +155,7 @@ class CreditProductStockUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput,
-				catalogGateway);
+		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput, catalogGateway);
 
 		// Assert
 		assertThat(result).isNotNull();

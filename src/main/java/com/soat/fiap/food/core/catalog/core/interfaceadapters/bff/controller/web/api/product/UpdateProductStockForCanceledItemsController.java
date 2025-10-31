@@ -31,12 +31,12 @@ public class UpdateProductStockForCanceledItemsController {
 
 		for (ProductStockUpdateInput.ProductStockItemInput productStockItemInput : productStockUpdateInput.items()) {
 
-			var catalog = CreditProductStockUseCase.creditProductStock(productStockItemInput,
-					catalogGateway);
+			var catalog = CreditProductStockUseCase.creditProductStock(productStockItemInput, catalogGateway);
 
 			catalogGateway.save(catalog);
 
-			log.info("Atualização de quantidade em estoque realizada com sucesso! Motivo: Cancelamento de Pedido, ProductId {}",
+			log.info(
+					"Atualização de quantidade em estoque realizada com sucesso! Motivo: Cancelamento de Pedido, ProductId {}",
 					productStockItemInput.productId());
 		}
 	}

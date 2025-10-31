@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderListener {
 
 	private final ServiceBusProcessorClient catalogOrderCreatedTopicServiceBusProcessorClient;
-	private final ServiceBusProcessorClient orderCanceledServiceBusProcessorClient;
+	private final ServiceBusProcessorClient catalogOrderCanceledTopicServiceBusProcessorClient;
 
 	/**
 	 * Inicia os processadores configurados após a injeção de dependências.
@@ -28,6 +28,6 @@ public class OrderListener {
 	@PostConstruct
 	public void run() {
 		catalogOrderCreatedTopicServiceBusProcessorClient.start();
-		orderCanceledServiceBusProcessorClient.start();
+		catalogOrderCanceledTopicServiceBusProcessorClient.start();
 	}
 }

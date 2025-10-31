@@ -1,6 +1,8 @@
 package com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways;
 
+import com.soat.fiap.food.core.catalog.core.domain.events.StockDebitEvent;
 import com.soat.fiap.food.core.catalog.core.domain.events.StockReversalEvent;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.mappers.StockDebitEventMapper;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.mappers.StockReversalEventMapper;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.EventPublisherSource;
 
@@ -25,9 +27,21 @@ public class EventPublisherGateway {
 	 * @param event
 	 *            Evento contendo informações do estoque estornado.
 	 */
-	public void publishOrderCreatedEvent(StockReversalEvent event) {
+	public void publishStockReversalEvent(StockReversalEvent event) {
 		var eventDto = StockReversalEventMapper.toDto(event);
 
 		eventPublisherSource.publishStockReversalEvent(eventDto);
+	}
+
+	/**
+	 * Publica um evento de débito de estoque.
+	 *
+	 * @param event
+	 *            Evento contendo informações do estoque debitado.
+	 */
+	public void publishStockDebitEvent(StockDebitEvent event) {
+		var eventDto = StockDebitEventMapper.toDto(event);
+
+		eventPublisherSource.publishStockDebitEvent(eventDto);
 	}
 }

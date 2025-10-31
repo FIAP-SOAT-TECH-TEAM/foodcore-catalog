@@ -26,8 +26,8 @@ public class CreditProductStockUseCase {
 	 *            gateway de catálogo para comunicação com o mundo exterior
 	 * @return catálogo com o estoque do produto atualizado
 	 */
-	public static Catalog creditProductStock(
-			ProductStockUpdateInput.ProductStockItemInput productStockItemInput, CatalogGateway gateway) {
+	public static Catalog creditProductStock(ProductStockUpdateInput.ProductStockItemInput productStockItemInput,
+			CatalogGateway gateway) {
 
 		if (productStockItemInput == null) {
 			throw new ProductNotFoundException(

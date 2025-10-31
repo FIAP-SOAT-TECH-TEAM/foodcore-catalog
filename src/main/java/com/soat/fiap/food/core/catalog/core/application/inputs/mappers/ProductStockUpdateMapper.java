@@ -5,6 +5,7 @@ import java.util.List;
 import com.soat.fiap.food.core.catalog.core.application.inputs.ProductStockUpdateInput;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.OrderItemCanceledEventDto;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.OrderItemCreatedEventDto;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.StockDebitItemEventDto;
 
 /**
  * Classe utilitária responsável por mapear objetos entre diferentes camadas da
@@ -53,6 +54,26 @@ public class ProductStockUpdateMapper {
 		List<ProductStockUpdateInput.ProductStockItemInput> items = events.stream()
 				.map(event -> new ProductStockUpdateInput.ProductStockItemInput(event.getProductId(),
 						event.getQuantity()))
+				.toList();
+
+		return new ProductStockUpdateInput(items);
+	}
+
+	/**
+	 * Converte uma lista de {@link StockDebitItemEventDto} (evento de débito de
+	 * estoque) em um {@link ProductStockUpdateInput} (input da aplicação).
+	 * <p>
+	 * Usado para reduzir a quantidade de produtos em estoque com base em eventos de
+	 * débito.
+	 *
+	 * @param events
+	 *            Lista de eventos de débito de estoque.
+	 * @return Um objeto {@link ProductStockUpdateInput} representando os dados de
+	 *         desconto de estoque.
+	 */
+	public static ProductStockUpdateInput toInputFromStockDebit(List<StockDebitItemEventDto> events) {
+		List<ProductStockUpdateInput.ProductStockItemInput> items = events.stream()
+				.map(event -> new ProductStockUpdateInput.ProductStockItemInput(event.productId, event.quantity))
 				.toList();
 
 		return new ProductStockUpdateInput(items);

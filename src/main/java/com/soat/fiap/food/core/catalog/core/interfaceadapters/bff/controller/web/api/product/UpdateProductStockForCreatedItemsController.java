@@ -2,10 +2,14 @@ package com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.we
 
 import com.soat.fiap.food.core.catalog.core.application.inputs.ProductStockUpdateInput;
 import com.soat.fiap.food.core.catalog.core.application.inputs.mappers.ProductStockUpdateMapper;
+import com.soat.fiap.food.core.catalog.core.application.inputs.mappers.StockDebitEventMapper;
 import com.soat.fiap.food.core.catalog.core.application.usecases.product.DebitProductStockUseCase;
+import com.soat.fiap.food.core.catalog.core.application.usecases.product.PublishStockDebitEventUseCase;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.OrderCreatedEventDto;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.CatalogGateway;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.EventPublisherGateway;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
+import com.soat.fiap.food.core.catalog.infrastructure.common.source.EventPublisherSource;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,21 +27,27 @@ public class UpdateProductStockForCreatedItemsController {
 	 *            evento de criação de pedido
 	 * @param catalogDataSource
 	 *            Origem de dados para o gateway
+	 * @param eventPublisherSource
+	 *            Fonte de publicação de eventos
 	 */
 	public static void updateProductStockForCreatedItems(OrderCreatedEventDto orderCreatedEvent,
-			CatalogDataSource catalogDataSource) {
+			CatalogDataSource catalogDataSource, EventPublisherSource eventPublisherSource) {
 		var catalogGateway = new CatalogGateway(catalogDataSource);
+		var eventPublisherGateway = new EventPublisherGateway(eventPublisherSource);
 		var productStockUpdateInput = ProductStockUpdateMapper.toInput(orderCreatedEvent.getItems());
 
 		for (ProductStockUpdateInput.ProductStockItemInput productStockItemInput : productStockUpdateInput.items()) {
 
-			var catalog = DebitProductStockUseCase.debitProductStock(productStockItemInput,
-					catalogGateway);
+			var catalog = DebitProductStockUseCase.debitProductStock(productStockItemInput, catalogGateway);
 
 			catalogGateway.save(catalog);
 
-			log.info("Atualização de quantidade em estoque realizada com sucesso! Motivo: Criação de Pedido, ProductId {}",
+			log.info(
+					"Atualização de quantidade em estoque realizada com sucesso! Motivo: Criação de Pedido, ProductId {}",
 					productStockItemInput.productId());
 		}
+
+		var stockDebitEventInput = StockDebitEventMapper.toInput(orderCreatedEvent);
+		PublishStockDebitEventUseCase.publishStockDebitEvent(stockDebitEventInput, eventPublisherGateway);
 	}
 }

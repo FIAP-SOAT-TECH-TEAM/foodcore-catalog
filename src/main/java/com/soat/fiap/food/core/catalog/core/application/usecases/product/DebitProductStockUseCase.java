@@ -11,8 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Caso de uso: Debitar quantidade em estoque de um produto.
  *
- * Este caso de uso remove do estoque a quantidade de um produto,
- * geralmente após a efetivação de um pedido.
+ * Este caso de uso remove do estoque a quantidade de um produto, geralmente
+ * após a efetivação de um pedido.
  */
 @Slf4j
 public class DebitProductStockUseCase {
@@ -27,7 +27,7 @@ public class DebitProductStockUseCase {
 	 * @return Catalogo com o estoque de produto atualizado
 	 */
 	public static Catalog debitProductStock(ProductStockUpdateInput.ProductStockItemInput productStockItemInput,
-											CatalogGateway gateway) {
+			CatalogGateway gateway) {
 		if (productStockItemInput == null) {
 			throw new ProductNotFoundException(
 					"Item de produto é nulo. Não é possível efetuar o debitar quantidade em estoque.");

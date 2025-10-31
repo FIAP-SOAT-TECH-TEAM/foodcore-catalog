@@ -42,8 +42,7 @@ class DebitProductStockUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = DebitProductStockUseCase.debitProductStock(productStockItemInput,
-				catalogGateway);
+		var result = DebitProductStockUseCase.debitProductStock(productStockItemInput, catalogGateway);
 
 		// Assert
 		assertThat(result).isNotNull();
@@ -65,8 +64,7 @@ class DebitProductStockUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = DebitProductStockUseCase.debitProductStock(productStockItemInput,
-				catalogGateway);
+		var result = DebitProductStockUseCase.debitProductStock(productStockItemInput, catalogGateway);
 
 		// Assert
 		assertThat(result).isNotNull();
@@ -88,8 +86,8 @@ class DebitProductStockUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act & Assert
-		assertThatThrownBy(() -> DebitProductStockUseCase
-				.debitProductStock(productStockItemInput, catalogGateway)).isInstanceOf(StockException.class)
+		assertThatThrownBy(() -> DebitProductStockUseCase.debitProductStock(productStockItemInput, catalogGateway))
+				.isInstanceOf(StockException.class)
 				.hasMessage("A quantidade de estoque deve ser positiva");
 
 		verify(catalogGateway).findByProductId(productId);
@@ -98,8 +96,7 @@ class DebitProductStockUseCaseTest {
 	@Test @DisplayName("Deve lançar exceção quando item de produto for nulo")
 	void shouldThrowExceptionWhenProductItemIsNull() {
 		// Act & Assert
-		assertThatThrownBy(
-				() -> DebitProductStockUseCase.debitProductStock(null, catalogGateway))
+		assertThatThrownBy(() -> DebitProductStockUseCase.debitProductStock(null, catalogGateway))
 				.isInstanceOf(OrderItemNotFoundException.class)
 				.hasMessage("Itens de pedido é nulo. Não é possível efetuar atualização de quantidade em estoque.");
 	}
@@ -113,8 +110,7 @@ class DebitProductStockUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.empty());
 
 		// Act & Assert
-		assertThatThrownBy(() -> DebitProductStockUseCase
-				.debitProductStock(productStockItemInput, catalogGateway))
+		assertThatThrownBy(() -> DebitProductStockUseCase.debitProductStock(productStockItemInput, catalogGateway))
 				.isInstanceOf(CatalogNotFoundException.class)
 				.hasMessage(
 						"Catálogo do produto do item de pedido não encontrado. Não é possível atualizar quantidade em estoque.");
@@ -136,8 +132,7 @@ class DebitProductStockUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = DebitProductStockUseCase.debitProductStock(productStockItemInput,
-				catalogGateway);
+		var result = DebitProductStockUseCase.debitProductStock(productStockItemInput, catalogGateway);
 
 		// Assert
 		assertThat(result).isNotNull();

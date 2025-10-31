@@ -1,5 +1,6 @@
 package com.soat.fiap.food.core.catalog.infrastructure.common.source;
 
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.StockDebitEventDto;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.StockReversalEventDto;
 
 /**
@@ -19,4 +20,12 @@ public interface EventPublisherSource {
 	 *            evento contendo informações do estoque estornado.
 	 */
 	void publishStockReversalEvent(StockReversalEventDto stockReversalEventDto);
+
+	/**
+	 * Publica um evento de estoque debitado.
+	 *
+	 * @param stockDebitEventDto
+	 *            evento contendo informações do estoque debitado.
+	 */
+	void publishStockDebitEvent(StockDebitEventDto stockDebitEventDto);
 }
