@@ -15,6 +15,7 @@ import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataS
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Listener responsável por processar eventos relacionados a pedidos cancelados
@@ -25,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
  * de catálogo, conforme a lógica de negócio definida.
  * </p>
  */
-@Configuration @Slf4j @RequiredArgsConstructor
+@Configuration @Slf4j @RequiredArgsConstructor @Transactional
 public class OrderCanceledListenerConfig {
 
 	private final Gson gson;

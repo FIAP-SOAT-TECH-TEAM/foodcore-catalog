@@ -14,14 +14,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.soat.fiap.food.core.catalog.core.application.inputs.ProductStockUpdateInput;
-import com.soat.fiap.food.core.catalog.core.application.usecases.product.UpdateProductStockForCanceledItemUseCase;
+import com.soat.fiap.food.core.catalog.core.application.usecases.product.CreditProductStockUseCase;
 import com.soat.fiap.food.core.catalog.core.domain.exceptions.CatalogNotFoundException;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.CatalogGateway;
 import com.soat.fiap.food.core.catalog.order.core.domain.exceptions.OrderItemNotFoundException;
 import com.soat.fiap.food.core.catalog.shared.fixtures.CatalogFixture;
 
 @ExtendWith(MockitoExtension.class) @DisplayName("UpdateProductStockForCanceledItemUseCase - Testes Unitários")
-class UpdateProductStockForCanceledItemUseCaseTest {
+class CreditProductStockUseCaseTest {
 
 	@Mock
 	private CatalogGateway catalogGateway;
@@ -41,7 +41,7 @@ class UpdateProductStockForCanceledItemUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = UpdateProductStockForCanceledItemUseCase.updateStockForCanceledItem(productStockItemInput,
+		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput,
 				catalogGateway);
 
 		// Assert
@@ -64,7 +64,7 @@ class UpdateProductStockForCanceledItemUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = UpdateProductStockForCanceledItemUseCase.updateStockForCanceledItem(productStockItemInput,
+		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput,
 				catalogGateway);
 
 		// Assert
@@ -87,7 +87,7 @@ class UpdateProductStockForCanceledItemUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = UpdateProductStockForCanceledItemUseCase.updateStockForCanceledItem(productStockItemInput,
+		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput,
 				catalogGateway);
 
 		// Assert
@@ -100,7 +100,7 @@ class UpdateProductStockForCanceledItemUseCaseTest {
 	void shouldThrowExceptionWhenProductItemIsNull() {
 		// Act & Assert
 		assertThatThrownBy(
-				() -> UpdateProductStockForCanceledItemUseCase.updateStockForCanceledItem(null, catalogGateway))
+				() -> CreditProductStockUseCase.updateStockForCanceledItem(null, catalogGateway))
 				.isInstanceOf(OrderItemNotFoundException.class)
 				.hasMessage("Itens de pedido é nulo. Não é possível efetuar atualização de quantidade em estoque.");
 	}
@@ -114,7 +114,7 @@ class UpdateProductStockForCanceledItemUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.empty());
 
 		// Act & Assert
-		assertThatThrownBy(() -> UpdateProductStockForCanceledItemUseCase
+		assertThatThrownBy(() -> CreditProductStockUseCase
 				.updateStockForCanceledItem(productStockItemInput, catalogGateway))
 				.isInstanceOf(CatalogNotFoundException.class)
 				.hasMessage(
@@ -137,7 +137,7 @@ class UpdateProductStockForCanceledItemUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = UpdateProductStockForCanceledItemUseCase.updateStockForCanceledItem(productStockItemInput,
+		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput,
 				catalogGateway);
 
 		// Assert
@@ -160,7 +160,7 @@ class UpdateProductStockForCanceledItemUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = UpdateProductStockForCanceledItemUseCase.updateStockForCanceledItem(productStockItemInput,
+		var result = CreditProductStockUseCase.updateStockForCanceledItem(productStockItemInput,
 				catalogGateway);
 
 		// Assert

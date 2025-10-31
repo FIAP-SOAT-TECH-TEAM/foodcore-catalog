@@ -9,39 +9,41 @@ import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.CatalogGa
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Caso de uso: Atualizar quantidade em estoque de um produto de acordo com a
- * quantidade solicitada em um pedido.
+ * Caso de uso: Creditar quantidade em estoque de um produto.
+ *
+ * Este caso de uso adiciona de volta ao estoque a quantidade de um produto,
+ * geralmente após o cancelamento de um pedido ou reversão de operação.
  */
 @Slf4j
-public class UpdateProductStockForCreatedItemsUseCase {
+public class CreditProductStockUseCase {
 
 	/**
-	 * Atualiza quantidade em estoque de um produto de acordo com a quantidade
-	 * solicitada em um pedido.
+	 * Credita a quantidade em estoque de um produto.
 	 *
 	 * @param productStockItemInput
-	 *            item do pedido
+	 *            item do produto
 	 * @param gateway
-	 *            Gateway de catalogo para comunicação com o mundo exterior
-	 * @return Catalogo com o estoque de produto atualizado
+	 *            gateway de catálogo para comunicação com o mundo exterior
+	 * @return catálogo com o estoque do produto atualizado
 	 */
-	public static Catalog updateStockForCreatedItem(ProductStockUpdateInput.ProductStockItemInput productStockItemInput,
-			CatalogGateway gateway) {
+	public static Catalog creditProductStock(
+			ProductStockUpdateInput.ProductStockItemInput productStockItemInput, CatalogGateway gateway) {
+
 		if (productStockItemInput == null) {
 			throw new ProductNotFoundException(
-					"Itens de pedido é nulo. Não é possível efetuar atualização de quantidade em estoque.");
+					"Item de produto é nulo. Não é possível efetuar o crédito de quantidade em estoque.");
 		}
 
 		var catalog = gateway.findByProductId(productStockItemInput.productId());
 		if (catalog.isEmpty()) {
 			throw new CatalogNotFoundException(
-					"Catálogo do produto do item de pedido não encontrado. Não é possível atualizar quantidade em estoque.");
+					"Catálogo do produto não encontrado. Não é possível creditar quantidade em estoque.");
 		}
 
 		var currentProductQuantity = catalog.get().getProductStockQuantity(productStockItemInput.productId());
-		var newProductQuantity = currentProductQuantity - productStockItemInput.quantity();
+		var newProductQuantity = currentProductQuantity + productStockItemInput.quantity();
 
-		log.info("Iniciando atualização de quantidade em estoque: ProductId {}, atual: {}, nova: {}",
+		log.info("Iniciando crédito de quantidade em estoque: ProductId {}, atual: {}, nova: {}",
 				productStockItemInput.productId(), currentProductQuantity, newProductQuantity);
 
 		catalog.get().updateProductStockQuantity(productStockItemInput.productId(), newProductQuantity);

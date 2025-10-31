@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.soat.fiap.food.core.catalog.core.application.inputs.ProductStockUpdateInput;
-import com.soat.fiap.food.core.catalog.core.application.usecases.product.UpdateProductStockForCreatedItemsUseCase;
+import com.soat.fiap.food.core.catalog.core.application.usecases.product.DebitProductStockUseCase;
 import com.soat.fiap.food.core.catalog.core.domain.exceptions.CatalogNotFoundException;
 import com.soat.fiap.food.core.catalog.core.domain.exceptions.StockException;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.CatalogGateway;
@@ -22,7 +22,7 @@ import com.soat.fiap.food.core.catalog.order.core.domain.exceptions.OrderItemNot
 import com.soat.fiap.food.core.catalog.shared.fixtures.CatalogFixture;
 
 @ExtendWith(MockitoExtension.class) @DisplayName("UpdateProductStockForCreatedItemsUseCase - Testes Unitários")
-class UpdateProductStockForCreatedItemsUseCaseTest {
+class DebitProductStockUseCaseTest {
 
 	@Mock
 	private CatalogGateway catalogGateway;
@@ -42,7 +42,7 @@ class UpdateProductStockForCreatedItemsUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = UpdateProductStockForCreatedItemsUseCase.updateStockForCreatedItem(productStockItemInput,
+		var result = DebitProductStockUseCase.debitProductStock(productStockItemInput,
 				catalogGateway);
 
 		// Assert
@@ -65,7 +65,7 @@ class UpdateProductStockForCreatedItemsUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = UpdateProductStockForCreatedItemsUseCase.updateStockForCreatedItem(productStockItemInput,
+		var result = DebitProductStockUseCase.debitProductStock(productStockItemInput,
 				catalogGateway);
 
 		// Assert
@@ -88,8 +88,8 @@ class UpdateProductStockForCreatedItemsUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act & Assert
-		assertThatThrownBy(() -> UpdateProductStockForCreatedItemsUseCase
-				.updateStockForCreatedItem(productStockItemInput, catalogGateway)).isInstanceOf(StockException.class)
+		assertThatThrownBy(() -> DebitProductStockUseCase
+				.debitProductStock(productStockItemInput, catalogGateway)).isInstanceOf(StockException.class)
 				.hasMessage("A quantidade de estoque deve ser positiva");
 
 		verify(catalogGateway).findByProductId(productId);
@@ -99,7 +99,7 @@ class UpdateProductStockForCreatedItemsUseCaseTest {
 	void shouldThrowExceptionWhenProductItemIsNull() {
 		// Act & Assert
 		assertThatThrownBy(
-				() -> UpdateProductStockForCreatedItemsUseCase.updateStockForCreatedItem(null, catalogGateway))
+				() -> DebitProductStockUseCase.debitProductStock(null, catalogGateway))
 				.isInstanceOf(OrderItemNotFoundException.class)
 				.hasMessage("Itens de pedido é nulo. Não é possível efetuar atualização de quantidade em estoque.");
 	}
@@ -113,8 +113,8 @@ class UpdateProductStockForCreatedItemsUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.empty());
 
 		// Act & Assert
-		assertThatThrownBy(() -> UpdateProductStockForCreatedItemsUseCase
-				.updateStockForCreatedItem(productStockItemInput, catalogGateway))
+		assertThatThrownBy(() -> DebitProductStockUseCase
+				.debitProductStock(productStockItemInput, catalogGateway))
 				.isInstanceOf(CatalogNotFoundException.class)
 				.hasMessage(
 						"Catálogo do produto do item de pedido não encontrado. Não é possível atualizar quantidade em estoque.");
@@ -136,7 +136,7 @@ class UpdateProductStockForCreatedItemsUseCaseTest {
 		when(catalogGateway.findByProductId(productId)).thenReturn(Optional.of(catalog));
 
 		// Act
-		var result = UpdateProductStockForCreatedItemsUseCase.updateStockForCreatedItem(productStockItemInput,
+		var result = DebitProductStockUseCase.debitProductStock(productStockItemInput,
 				catalogGateway);
 
 		// Assert

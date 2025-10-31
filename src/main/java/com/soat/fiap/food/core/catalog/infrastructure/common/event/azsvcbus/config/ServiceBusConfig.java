@@ -17,4 +17,10 @@ public class ServiceBusConfig {
 
 	/** Fila para eventos de pedido cancelado. */
 	public static final String ORDER_CANCELED_QUEUE = "order.canceled.queue";
+
+	/** Fila para eventos de estoque estornado. */
+	public static final String STOCK_REVERSAL_QUEUE = "stock.reversal.queue";
+
+	/** Nome da subscription para eventos de pedido criado. */
+	public static final String PAYMENT_ORDER_CREATED_TOPIC_SUBSCRIPTION = "payment.order.created.topic.subscription";
 }

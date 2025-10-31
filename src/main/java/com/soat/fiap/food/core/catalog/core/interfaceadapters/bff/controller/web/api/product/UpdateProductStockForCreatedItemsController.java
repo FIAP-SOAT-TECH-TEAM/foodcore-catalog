@@ -2,7 +2,7 @@ package com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.we
 
 import com.soat.fiap.food.core.catalog.core.application.inputs.ProductStockUpdateInput;
 import com.soat.fiap.food.core.catalog.core.application.inputs.mappers.ProductStockUpdateMapper;
-import com.soat.fiap.food.core.catalog.core.application.usecases.product.UpdateProductStockForCreatedItemsUseCase;
+import com.soat.fiap.food.core.catalog.core.application.usecases.product.DebitProductStockUseCase;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.OrderCreatedEventDto;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.CatalogGateway;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
@@ -31,12 +31,12 @@ public class UpdateProductStockForCreatedItemsController {
 
 		for (ProductStockUpdateInput.ProductStockItemInput productStockItemInput : productStockUpdateInput.items()) {
 
-			var catalog = UpdateProductStockForCreatedItemsUseCase.updateStockForCreatedItem(productStockItemInput,
+			var catalog = DebitProductStockUseCase.debitProductStock(productStockItemInput,
 					catalogGateway);
 
 			catalogGateway.save(catalog);
 
-			log.info("Atualização de quantidade em estoque realizada com sucesso! ProductId {}",
+			log.info("Atualização de quantidade em estoque realizada com sucesso! Motivo: Criação de Pedido, ProductId {}",
 					productStockItemInput.productId());
 		}
 	}

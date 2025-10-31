@@ -14,12 +14,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.soat.fiap.food.core.catalog.core.application.usecases.product.PublishProductCreatedEventUseCase;
-import com.soat.fiap.food.core.catalog.core.domain.events.ProductCreatedEvent;
+import com.soat.fiap.food.core.catalog.core.domain.events.StockReversalEvent;
 import com.soat.fiap.food.core.catalog.shared.core.interfaceadapters.gateways.EventPublisherGateway;
 import com.soat.fiap.food.core.catalog.shared.fixtures.CatalogFixture;
 
 @ExtendWith(MockitoExtension.class) @DisplayName("PublishProductCreatedEventUseCase - Testes Unitários")
-class PublishProductCreatedEventUseCaseTest {
+class PublishStockReversalEventUseCaseTest {
 
 	@Mock
 	private EventPublisherGateway eventPublisherGateway;
@@ -66,7 +66,7 @@ class PublishProductCreatedEventUseCaseTest {
 	void shouldPublishEventWithCorrectProductData() {
 		// Arrange
 		var product = CatalogFixture.createValidProduct();
-		var eventCaptor = ArgumentCaptor.forClass(ProductCreatedEvent.class);
+		var eventCaptor = ArgumentCaptor.forClass(StockReversalEvent.class);
 
 		// Act
 		PublishProductCreatedEventUseCase.publishProductCreatedEvent(product, eventPublisherGateway);
@@ -85,7 +85,7 @@ class PublishProductCreatedEventUseCaseTest {
 	void shouldPublishEventForProductWithoutImage() {
 		// Arrange
 		var product = CatalogFixture.createProductWithoutImage();
-		var eventCaptor = ArgumentCaptor.forClass(ProductCreatedEvent.class);
+		var eventCaptor = ArgumentCaptor.forClass(StockReversalEvent.class);
 
 		// Act
 		PublishProductCreatedEventUseCase.publishProductCreatedEvent(product, eventPublisherGateway);
@@ -102,7 +102,7 @@ class PublishProductCreatedEventUseCaseTest {
 	void shouldEnsureEventTimestampIsCreatedAutomatically() {
 		// Arrange
 		var product = CatalogFixture.createValidProduct();
-		var eventCaptor = ArgumentCaptor.forClass(ProductCreatedEvent.class);
+		var eventCaptor = ArgumentCaptor.forClass(StockReversalEvent.class);
 
 		// Act
 		PublishProductCreatedEventUseCase.publishProductCreatedEvent(product, eventPublisherGateway);
@@ -124,7 +124,7 @@ class PublishProductCreatedEventUseCaseTest {
 		var originalPrice = product.getPrice();
 		var originalCategoryId = product.getCategoryId();
 
-		var eventCaptor = ArgumentCaptor.forClass(ProductCreatedEvent.class);
+		var eventCaptor = ArgumentCaptor.forClass(StockReversalEvent.class);
 
 		// Act
 		PublishProductCreatedEventUseCase.publishProductCreatedEvent(product, eventPublisherGateway);
@@ -143,7 +143,7 @@ class PublishProductCreatedEventUseCaseTest {
 	void shouldCreateEventWithCurrentTimestamp() {
 		// Arrange
 		var product = CatalogFixture.createValidProduct();
-		var eventCaptor = ArgumentCaptor.forClass(ProductCreatedEvent.class);
+		var eventCaptor = ArgumentCaptor.forClass(StockReversalEvent.class);
 		var beforeEvent = java.time.LocalDateTime.now();
 
 		// Act
