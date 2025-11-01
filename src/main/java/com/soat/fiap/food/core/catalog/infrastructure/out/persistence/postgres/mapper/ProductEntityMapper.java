@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.mapstruct.*;
 
-import com.soat.fiap.food.core.catalog.core.domain.model.Product;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.CategoryDTO;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.ProductDTO;
 import com.soat.fiap.food.core.catalog.infrastructure.out.persistence.postgres.entity.CategoryEntity;
@@ -58,33 +57,6 @@ public interface ProductEntityMapper {
 	}
 
 	/**
-	 * Converte uma entidade JPA para uma entidade de domínio
-	 *
-	 * @param entity
-	 *            Entidade JPA
-	 * @param cycleAvoidingMappingContext
-	 *            Contexto para evitar ciclos
-	 * @return Entidade de domínio
-	 */
-	@Mapping(target = "stock", source = "stock")
-	@Mapping(target = "auditInfo", expression = "java(com.soat.fiap.food.core.shared.infrastructure.common.mapper.AuditInfoMapper.buildAuditInfo(entity.getAuditInfo().getCreatedAt(), entity.getAuditInfo().getUpdatedAt()))")
-	Product toDomain(ProductEntity entity, @Context CycleAvoidingMappingContext cycleAvoidingMappingContext);
-
-	/**
-	 * Converte uma lista de entidades JPA para uma lista de entidades de domínio
-	 *
-	 * @param entities
-	 *            Lista de entidades JPA
-	 * @param cycleAvoidingMappingContext
-	 *            Contexto para evitar ciclos
-	 * @return Lista de entidades de domínio
-	 */
-	@Mapping(target = "stock", source = "stock")
-	@Mapping(target = "auditInfo", expression = "java(com.soat.fiap.food.core.shared.infrastructure.common.mapper.AuditInfoMapper.buildAuditInfo(entities.getAuditInfo().getCreatedAt(), entities.getAuditInfo().getUpdatedAt()))")
-	List<Product> toDomainList(List<ProductEntity> entities,
-			@Context CycleAvoidingMappingContext cycleAvoidingMappingContext);
-
-	/**
 	 * Converte uma entidade de domínio para uma entidade JPA
 	 *
 	 * @param dto
@@ -96,16 +68,6 @@ public interface ProductEntityMapper {
 	@Mapping(target = "auditInfo", expression = "java(com.soat.fiap.food.core.shared.infrastructure.common.mapper.AuditInfoMapper.buildAuditInfo(dto.createdAt(), dto.updatedAt()))")
 	@Mapping(target = "category", ignore = true)
 	ProductEntity toEntity(ProductDTO dto, @Context CycleAvoidingMappingContext cycleAvoidingMappingContext);
-
-	@DoIgnore
-	default Product toDomain(ProductEntity entity) {
-		return toDomain(entity, new CycleAvoidingMappingContext());
-	}
-
-	@DoIgnore
-	default List<Product> toDomainList(List<ProductEntity> entities) {
-		return toDomainList(entities, new CycleAvoidingMappingContext());
-	}
 
 	/**
 	 * Converte uma lista de entidades JPA para uma lista de DTOs.
