@@ -8,9 +8,9 @@ spring:
 
   # Configurações de banco de dados
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL:}
+    username: ${SPRING_DATASOURCE_USERNAME:}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -51,7 +51,7 @@ spring:
       max-request-size: 15MB
 
 azsvcbus:
-  connection-string: ${AZ_SVC_BUS_CONNECTION_STRING}
+  connection-string: ${AZ_SVC_BUS_CONNECTION_STRING:}
 
 management:
   # Tracing Distribuído
@@ -74,10 +74,10 @@ logging:
     org.springdoc: DEBUG
 
 server:
-  address: ${SERVER_ADDRESS}
-  port: ${SERVER_PORT}
+  address: ${SERVER_ADDRESS:}
+  port: ${SERVER_PORT:}
   servlet:
-    context-path: ${SERVER_CONTEXT_PATH}
+    context-path: ${SERVER_CONTEXT_PATH:}
   compression:
     enabled: true
   error:
@@ -87,5 +87,5 @@ server:
 # Azure Storage Configuration
 azure:
   storage:
-    connection-string: ${AZURE_STORAGE_CONNECTION_STRING}
-    container-name: ${AZURE_STORAGE_CONTAINER_NAME}
+    connection-string: ${AZURE_STORAGE_CONNECTION_STRING:}
+    container-name: ${AZURE_STORAGE_CONTAINER_NAME:}

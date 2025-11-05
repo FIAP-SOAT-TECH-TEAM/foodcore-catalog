@@ -30,6 +30,9 @@ spring:
 management:
   tracing:
     enabled: false
+  zipkin:
+    tracing:
+      endpoint:
 
 # Configurações de log para testes
 logging:
@@ -38,3 +41,12 @@ logging:
     com.fastfood: DEBUG
     org.springframework.test: INFO
     org.hibernate.SQL: DEBUG
+
+azsvcbus:
+  connection-string: ${AZ_SVC_BUS_CONNECTION_STRING:Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;}
+
+server:
+  address: ${SERVER_ADDRESS:0.0.0.0}
+  port: ${SERVER_PORT:8085}
+  servlet:
+    context-path: ${SERVER_CONTEXT_PATH:/api}
