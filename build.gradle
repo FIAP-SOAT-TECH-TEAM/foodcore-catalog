@@ -41,12 +41,15 @@ repositories {
 }
 
 ext {
+	set('springCloudBom', "2024.0.0")
+	set('azureSpringCloudBom', "6.0.0")
+	set('cucumberBom', "7.31.0")
+	set('testContainersBom', "2.0.1")
+
 	set('mapstructVersion', "1.5.5.Final")
 	set('springdocVersion', "2.8.4")
 	set('picoli', "4.7.5")
-	set('springCloudVersion', "2024.0.0")
 	set('foodcoreShared', "0.0.1")
-	set('azureSpringCloudVersion', "6.0.0")
 }
 
 dependencies {
@@ -90,8 +93,15 @@ dependencies {
 	implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${springdocVersion}"
 
 	// Testes
+	// Testes
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation ("io.cucumber:cucumber-java")
+	testImplementation ("io.cucumber:cucumber-spring")
+	testImplementation("org.testcontainers:testcontainers")
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.testcontainers:testcontainers-postgresql")
+	testImplementation "io.rest-assured:rest-assured"
 
 	// A Task generateOpenApiDocs é executada com Profile de teste, e precisa que a aplicação esteja em execução.
 	// Portanto, deixei como runtimeOnly para que seja incluída no classpath durante a execução.
@@ -106,80 +116,12 @@ dependencies {
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-		mavenBom "com.azure.spring:spring-cloud-azure-dependencies:${azureSpringCloudVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudBom}"
+		mavenBom "com.azure.spring:spring-cloud-azure-dependencies:${azureSpringCloudBom}"
+		mavenBom "org.testcontainers:testcontainers-bom:${testContainersBom}"
+		mavenBom "io.cucumber:cucumber-bom:${cucumberBom}"
 	}
 }
-
-tasks.named('test') {
-	useJUnitPlatform()
-	finalizedBy jacocoTestReport
-}
-
-// Integrar Spotless no build process - funciona automaticamente para todos
-tasks.named('compileJava') {
-	dependsOn 'spotlessCheck'
-}
-
-tasks.named('build') {
-	dependsOn 'spotlessCheck'
-}
-
-jacocoTestReport {
-	dependsOn test
-	reports {
-		xml.required = true
-		html.required = true
-	}
-	afterEvaluate {
-		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: [
-				// Application main class
-				'**/FoodCoreApiApplication.class',
-				// Configuration classes
-				'**/config/**',
-				'**/*Config.class',
-				'**/*Configuration.class',
-				'**/*Properties.class',
-				// DTOs and Request/Response classes
-				'**/dto/**',
-				'**/request/**',
-				'**/response/**',
-				// MapStruct generated mappers
-				'**/mapper/**/*Impl.class',
-				'**/mapper/**/*MapperImpl*.class',
-				// Infrastructure adapters (controllers, repositories, etc.)
-				'**/infrastructure/in/web/api/controller/**',
-				'**/infrastructure/in/web/api/auth/**',
-				'**/infrastructure/in/web/api/exceptions/**',
-				'**/infrastructure/in/event/listener/**',
-				'**/infrastructure/in/schedulers/**',
-				'**/infrastructure/out/persistence/**/*Repository*.class',
-				'**/infrastructure/out/persistence/**/*DataSource*.class',
-				'**/infrastructure/out/persistence/**/*Entity*.class',
-				'**/infrastructure/out/persistence/**/*Converter*.class',
-				'**/infrastructure/out/mercadopago/client/**',
-				'**/infrastructure/out/mercadopago/entity/**',
-				'**/infrastructure/out/mercadopago/config/**',
-				'**/infrastructure/out/mercadopago/deserializers/**',
-				'**/infrastructure/out/mercadopago/exceptions/**',
-				'**/infrastructure/out/mercadopago/mapper/**',
-				'**/infrastructure/out/event/publisher/**',
-				'**/infrastructure/out/persistence/azureblobstorage/**',
-				// Interface adapters (controllers, presenters, gateways)
-				'**/interfaceadapters/controller/web/api/**',
-				'**/interfaceadapters/presenter/web/api/**',
-				'**/interfaceadapters/gateways/**',
-				// Common infrastructure
-				'**/infrastructure/common/source/**',
-				'**/infrastructure/common/mapper/**',
-				// Package info files
-				'**/package-info.class'
-			])
-		}))
-	}
-}
-
 // Configuração do Liquibase para usar o arquivo de changelog
 liquibase {
 	activities {
@@ -193,24 +135,105 @@ liquibase {
 	runList = 'main'
 }
 
-// Tarefa para copiar o driver PostgreSQL para uso em testes externos
-tasks.register('extractDependencies', Copy) {
-	from configurations.runtimeClasspath
-	include '**/postgresql*.jar'
-	into "${buildDir}/dependencies"
-	rename { filename -> 'postgresql.jar' }
+// Integrar Spotless no build process - funciona automaticamente para todos
+tasks.named('compileJava') {
+	dependsOn 'spotlessCheck'
 }
 
-// Adicionar a extração de dependências ao build
 tasks.named('build') {
-	dependsOn extractDependencies
+	dependsOn 'spotlessCheck'
 }
 
-// Configuração do SonarQube
+configurations {
+	cucumberRuntime {
+		extendsFrom testImplementation
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+tasks.register('cucumber') {
+	dependsOn assemble, testClasses
+	doLast {
+		javaexec {
+			main = "io.cucumber.core.cli.Main"
+			classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+			systemProperty "cucumber.filter.tags", System.getProperty("cucumber.filter.tags")
+			args = [
+				'--plugin',
+				'pretty',
+				'--plugin',
+				'html:target/cucumber-reports/cucumber.html',
+				'--plugin',
+				'junit:target/cucumber-reports/cucumber.xml',
+				'--plugin',
+				'json:target/cucumber-reports/cucumber.json',
+				'src/test/java/integration/bdd'
+			]
+		}
+	}
+}
+
+jacocoTestReport {
+	dependsOn test
+	dependsOn cucumber
+	reports {
+		xml.required = true
+		html.required = true
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+				// Application main class
+				'**/FoodCoreApiApplication.java',
+				// Configuration classes
+				'**/config/**',
+				'**/*Config.java',
+				'**/*Configuration.java',
+				'**/*Properties.java',
+				// Exceptions
+				"**/exceptions/**",
+				// DTOs and Request/Response classes
+				'**/dto/**',
+				'**/request/**',
+				'**/response/**',
+				// MapStruct generated mappers
+				'**/mapper/**/*Impl.java',
+				'**/mapper/**/*MapperImpl*.java',
+				// Infrastructure adapters (controllers, repositories, etc.)
+				'**/infrastructure/in/web/api/controller/**',
+				'**/infrastructure/in/event/listener/**',
+				'**/infrastructure/in/schedulers/**',
+				'**/infrastructure/out/**/client/*Source*.java',
+				'**/infrastructure/out/**/client/*Client*.java',
+				'**/infrastructure/out/persistence/**/*Repository*.java',
+				'**/infrastructure/out/persistence/**/*DataSource*.java',
+				'**/infrastructure/out/persistence/**/*Entity*.java',
+				'**/infrastructure/out/persistence/**/*Converter*.java',
+				'**/infrastructure/out/persistence/**/*Populator*.java',
+				'**/infrastructure/out/persistence/**/*Mapper*.java',
+				'**/infrastructure/out/common/**/*Seeder*.java',
+				'**/infrastructure/out/event/publisher/**',
+				// Common infrastructure
+				'**/infrastructure/common/source/**',
+				'**/infrastructure/common/mapper/**',
+				'**/infrastructure/common/event/**',
+				// Package info files
+				'**/package-info.java'
+			])
+		}))
+	}
+}
+
 sonar {
 	properties {
-		property 'sonar.projectKey', 'com.soat.fiap.foodcore-catalog'
-		property 'sonar.projectName', 'Food Core Catalog'
+		property 'sonar.projectKey', 'FIAP-SOAT-TECH-TEAM_foodcore-catalog'
+		property "sonar.organization", "fiap-soat-tech-team"
+		property 'sonar.projectName', 'foodcore-catalog'
+		property 'sonar.host.url', 'https://sonarcloud.io'
+		property 'sonar.token', System.getenv("SONAR_CLOUD_TOKEN") ?: env.SONAR_CLOUD_TOKEN.value
 		property 'sonar.sources', 'src/main/java'
 		property 'sonar.tests', 'src/test/java'
 		property 'sonar.java.binaries', 'build/classes/java/main'
@@ -224,6 +247,8 @@ sonar {
 			'**/*Config.java',
 			'**/*Configuration.java',
 			'**/*Properties.java',
+			// Exceptions
+			"**/exceptions/**",
 			// DTOs and Request/Response classes
 			'**/dto/**',
 			'**/request/**',
@@ -233,29 +258,22 @@ sonar {
 			'**/mapper/**/*MapperImpl*.java',
 			// Infrastructure adapters (controllers, repositories, etc.)
 			'**/infrastructure/in/web/api/controller/**',
-			'**/infrastructure/in/web/api/auth/**',
-			'**/infrastructure/in/web/api/exceptions/**',
 			'**/infrastructure/in/event/listener/**',
 			'**/infrastructure/in/schedulers/**',
+			'**/infrastructure/out/**/client/*Source*.java',
+			'**/infrastructure/out/**/client/*Client*.java',
 			'**/infrastructure/out/persistence/**/*Repository*.java',
 			'**/infrastructure/out/persistence/**/*DataSource*.java',
 			'**/infrastructure/out/persistence/**/*Entity*.java',
 			'**/infrastructure/out/persistence/**/*Converter*.java',
-			'**/infrastructure/out/mercadopago/client/**',
-			'**/infrastructure/out/mercadopago/entity/**',
-			'**/infrastructure/out/mercadopago/config/**',
-			'**/infrastructure/out/mercadopago/deserializers/**',
-			'**/infrastructure/out/mercadopago/exceptions/**',
-			'**/infrastructure/out/mercadopago/mapper/**',
+			'**/infrastructure/out/persistence/**/*Populator*.java',
+			'**/infrastructure/out/persistence/**/*Mapper*.java',
+			'**/infrastructure/out/common/**/*Seeder*.java',
 			'**/infrastructure/out/event/publisher/**',
-			'**/infrastructure/out/persistence/azureblobstorage/**',
-			// Interface adapters (controllers, presenters, gateways)
-			'**/interfaceadapters/controller/web/api/**',
-			'**/interfaceadapters/presenter/web/api/**',
-			'**/interfaceadapters/gateways/**',
 			// Common infrastructure
 			'**/infrastructure/common/source/**',
 			'**/infrastructure/common/mapper/**',
+			'**/infrastructure/common/event/**',
 			// Package info files
 			'**/package-info.java'
 		].join(',')
@@ -263,7 +281,6 @@ sonar {
 	}
 }
 
-// Configuração do Spotless para formatação de código
 spotless {
 	java {
 		// Usa o Eclipse formatter com configurações customizadas
@@ -298,7 +315,6 @@ spotless {
 	}
 }
 
-// Gerar swagger.json
 openApi {
 	apiDocsUrl.set("http://localhost:8085/api/v3/api-docs")
 	outputDir.set(file("$buildDir/openapi"))

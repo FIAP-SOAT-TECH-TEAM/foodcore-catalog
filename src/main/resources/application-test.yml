@@ -38,6 +38,7 @@ management:
 logging:
   level:
     root: WARN
+    integration.bdd: DEBUG
     com.fastfood: DEBUG
     org.springframework.test: INFO
     org.hibernate.SQL: DEBUG
