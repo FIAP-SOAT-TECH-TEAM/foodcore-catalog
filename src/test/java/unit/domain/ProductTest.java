@@ -25,8 +25,7 @@ class ProductTest {
 		// Assert
 		assertNotNull(product);
 		assertEquals("Big Mac", product.getName());
-		assertEquals(
-				"Delicioso hambúrguer com dois hambúrgueres, alface, queijo, molho especial, cebola e picles em um pão com gergelim",
+		assertEquals("Delicioso hambúrguer com dois hambúrgueres, alface, queijo, molho especial, cebola e picles",
 				product.getDescription());
 		assertEquals(new BigDecimal("25.90"), product.getPrice());
 		assertNotNull(product.getImageUrl());
@@ -64,8 +63,7 @@ class ProductTest {
 		String description = product.getDescription();
 
 		// Assert
-		assertEquals(
-				"Delicioso hambúrguer com dois hambúrgueres, alface, queijo, molho especial, cebola e picles em um pão com gergelim",
+		assertEquals("Delicioso hambúrguer com dois hambúrgueres, alface, queijo, molho especial, cebola e picles",
 				description);
 	}
 
@@ -137,11 +135,12 @@ class ProductTest {
 		Product product = CatalogFixture.createValidProduct();
 
 		// Act
-		boolean isActive = product.isActive();
+		var isActive = product.isActive();
+		var stockQuantity = product.getStockQuantity();
 
 		// Assert
-		// O produto pode estar ativo ou não dependendo do estoque inicial
-		assertNotNull(isActive);
+		assertTrue(stockQuantity > 0);
+		assertTrue(isActive);
 	}
 
 	@Test @DisplayName("Deve verificar se categoria está ativa")

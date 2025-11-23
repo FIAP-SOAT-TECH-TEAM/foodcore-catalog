@@ -147,7 +147,7 @@ class GetProductByIdUseCaseTest {
 		assertThat(result.getDescription()).isNotBlank();
 		assertThat(result.getPrice()).isPositive();
 		assertThat(result.getStock()).isNotNull();
-		assertThat(result.isActive()).isNotNull();
+		assertThat(result.isActive()).isTrue();
 
 		verify(catalogGateway).findById(catalogId);
 	}
