@@ -43,5 +43,8 @@ public record Details(String name, String description) {
 		if (trimmedName.equalsIgnoreCase(trimmedDescription)) {
 			throw new IllegalArgumentException("Nome e descrição não podem ser iguais");
 		}
+
+		name = trimmedName;
+		description = trimmedDescription;
 	}
 }

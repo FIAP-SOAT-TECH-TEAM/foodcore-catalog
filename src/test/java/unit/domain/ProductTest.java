@@ -14,7 +14,7 @@ import com.soat.fiap.food.core.catalog.core.domain.vo.ImageUrl;
 
 import unit.fixtures.CatalogFixture;
 
-@DisplayName("Product - Testes de Domínio")
+@DisplayName("Product - Testes Unitários")
 class ProductTest {
 
 	@Test @DisplayName("Deve criar produto válido")
@@ -30,7 +30,6 @@ class ProductTest {
 				product.getDescription());
 		assertEquals(new BigDecimal("25.90"), product.getPrice());
 		assertNotNull(product.getImageUrl());
-		// Não assumimos que o produto está ativo por padrão, pois depende do estoque
 	}
 
 	@Test @DisplayName("Deve criar produto sem imagem")

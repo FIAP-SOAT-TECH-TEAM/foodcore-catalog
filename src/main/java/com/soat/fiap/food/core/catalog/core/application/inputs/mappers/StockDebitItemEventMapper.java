@@ -59,7 +59,7 @@ public class StockDebitItemEventMapper {
 	 *            Input da aplicação representando o item debitado.
 	 * @return Um evento {@link StockDebitItemEvent}.
 	 */
-	protected static StockDebitItemEvent toItemEvent(StockDebitItemEventInput input) {
+	public static StockDebitItemEvent toItemEvent(StockDebitItemEventInput input) {
 		return StockDebitItemEvent.of(input.productId(), input.name(), input.quantity(), input.unitPrice(),
 				input.subtotal(), input.observations());
 	}

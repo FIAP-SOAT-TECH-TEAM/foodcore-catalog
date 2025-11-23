@@ -11,18 +11,16 @@ import com.soat.fiap.food.core.catalog.core.application.inputs.mappers.CategoryM
 import com.soat.fiap.food.core.catalog.core.domain.model.Category;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.requests.CategoryRequest;
 
+import unit.fixtures.CatalogFixture;
+
 @DisplayName("CategoryMapper - Testes Unitários")
 class CategoryMapperTest {
 
 	@Test @DisplayName("Deve mapear CategoryRequest para CategoryInput com sucesso")
 	void shouldMapCategoryRequestToInput() {
 		// Arrange
-		CategoryRequest request = new CategoryRequest();
-		request.setCatalogId(1L);
-		request.setName("Lanches");
-		request.setDescription("Categoria de lanches diversos");
-		request.setActive(true);
-		request.setDisplayOrder(1);
+		CategoryRequest request = CatalogFixture.createValidCategoryRequest(1L, "Lanches",
+				"Categoria de lanches diversos", true, 1);
 
 		// Act
 		CategoryInput result = CategoryMapper.toInput(request);
@@ -39,7 +37,8 @@ class CategoryMapperTest {
 	@Test @DisplayName("Deve mapear CategoryInput para Category domain com sucesso")
 	void shouldMapCategoryInputToDomain() {
 		// Arrange
-		CategoryInput input = new CategoryInput(2L, "Bebidas", "Categoria de bebidas variadas", false, 2);
+		CategoryInput input = CatalogFixture.createValidCategoryInput(2L, "Bebidas", "Categoria de bebidas variadas",
+				false, 2);
 
 		// Act
 		Category result = CategoryMapper.toDomain(input);
