@@ -3,7 +3,7 @@ package com.soat.fiap.food.core.catalog.infrastructure.in.event.listener.azsvcbu
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.web.api.product.UpdateProductStockForCreatedItemsController;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.controller.product.UpdateProductStockForCreatedItemsController;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.OrderCreatedEventDto;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.EventPublisherSource;

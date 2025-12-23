@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.presenter.web.api.CategoryPresenter;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.presenter.CategoryPresenter;
 
 import unit.fixtures.CatalogFixture;
 

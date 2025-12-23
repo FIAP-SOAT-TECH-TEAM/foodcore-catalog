@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.presenter.web.api.CatalogPresenter;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.presenter.CatalogPresenter;
 
 import unit.fixtures.CatalogFixture;
 

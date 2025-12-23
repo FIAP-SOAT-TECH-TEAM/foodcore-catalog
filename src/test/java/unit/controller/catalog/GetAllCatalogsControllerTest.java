@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.web.api.catalog.GetAllCatalogsController;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.controller.catalog.GetAllCatalogsController;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.mappers.CatalogDTOMapper;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 

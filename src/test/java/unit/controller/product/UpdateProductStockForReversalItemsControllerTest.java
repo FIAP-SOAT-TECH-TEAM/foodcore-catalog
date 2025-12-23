@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.soat.fiap.food.core.catalog.core.application.usecases.product.CreditProductStockUseCase;
 import com.soat.fiap.food.core.catalog.core.application.usecases.product.PublishStockReversalEventUseCase;
-import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.web.api.product.UpdateProductStockForReversalItemsController;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.controller.product.UpdateProductStockForReversalItemsController;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.dto.events.StockDebitEventDto;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.EventPublisherSource;

@@ -15,7 +15,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.soat.fiap.food.core.catalog.core.application.usecases.product.CreditProductStockUseCase;
-import com.soat.fiap.food.core.catalog.core.interfaceadapters.bff.controller.web.api.product.UpdateProductStockForCanceledItemsController;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.controller.product.UpdateProductStockForCanceledItemsController;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 
 import unit.fixtures.CatalogFixture;
