@@ -2,6 +2,10 @@ spring:
   application:
     name: foodcore-catalog
 
+  threads:
+    virtual:
+      enabled: true
+
   # Perfil padrão (development)
   profiles:
     active: local
@@ -77,7 +81,7 @@ server:
   address: ${SERVER_ADDRESS:}
   port: ${SERVER_PORT:}
   servlet:
-    context-path: ${SERVER_CONTEXT_PATH:}
+    context-path: /
   compression:
     enabled: true
   error:

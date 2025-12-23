@@ -1,6 +1,6 @@
 apiVersion: v2
-name: foodcoreapi
-description: API de gerenciamento de pedidos para restaurantes fast-food com Clean Architecture, DDD e monólitos modulares usando Spring Modulith.
+name: foodcore-catalog
+description: API de gerenciamento de catálogos de produtos para restaurantes fast-food com Clean Architecture, DDD e microsserviços.
 
 # A chart can be either an 'application' or a 'library' chart.
 #

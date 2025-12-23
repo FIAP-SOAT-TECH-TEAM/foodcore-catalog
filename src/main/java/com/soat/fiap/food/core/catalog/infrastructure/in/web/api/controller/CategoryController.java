@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
-@RestController @RequestMapping("/catalogs") @Slf4j
+@RestController @RequestMapping("/") @Slf4j
 public class CategoryController {
 
 	private final CatalogDataSource catalogDataSource;
