@@ -238,6 +238,7 @@ sonar {
 		property 'sonar.java.binaries', 'build/classes/java/main'
 		property 'sonar.java.test.binaries', 'build/classes/java/test'
 		property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/jacoco/test/jacocoTestReport.xml'
+		property 'sonar.pullrequest.github.summary_comment', 'true'
 		property 'sonar.exclusions', [
 			// Application main class
 			'**/FoodCoreApiApplication.java',
