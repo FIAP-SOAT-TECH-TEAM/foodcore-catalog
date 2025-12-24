@@ -122,17 +122,18 @@ dependencyManagement {
 		mavenBom "io.cucumber:cucumber-bom:${cucumberBom}"
 	}
 }
+
 // Configuração do Liquibase para usar o arquivo de changelog
 liquibase {
-	activities {
-		main {
-			changeLogFile 'src/main/resources/db/changelog/db.changelog-master.yaml'
-			url System.getenv('SPRING_DATASOURCE_URL') ?: env.SPRING_DATASOURCE_URL.value
-			username System.getenv('SPRING_DATASOURCE_USERNAME') ?: env.SPRING_DATASOURCE_USERNAME.value
-			password System.getenv('SPRING_DATASOURCE_PASSWORD') ?: env.SPRING_DATASOURCE_PASSWORD.value
-		}
-	}
-	runList = 'main'
+    activities {
+        main {
+            changeLogFile 'src/main/resources/db/changelog/db.changelog-master.yaml'
+            url      env.isPresent("SPRING_DATASOURCE_URL") ? env.SPRING_DATASOURCE_URL.value : 'jdbc:postgresql://localhost:5432/order'
+            username env.isPresent("SPRING_DATASOURCE_USERNAME") ? env.SPRING_DATASOURCE_USERNAME.value : 'postgres'
+            password env.isPresent("SPRING_DATASOURCE_PASSWORD") ? env.SPRING_DATASOURCE_PASSWORD.value : 'postgres'
+        }
+    }
+    runList = 'main'
 }
 
 // Integrar Spotless no build process - funciona automaticamente para todos
