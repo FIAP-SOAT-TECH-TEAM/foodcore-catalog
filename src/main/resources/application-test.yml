@@ -1,0 +1,53 @@
+# Configuração de datasource para testes (usando H2 em memória)
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+
+  # Configuração do JPA para testes
+  jpa:
+    hibernate:
+      ddl-auto: none
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.H2Dialect
+          format_sql: true
+          show_sql: true
+
+  # Desabilitar o liquibase em testes (usamos o DDL auto create)
+  liquibase:
+    enabled: false
+
+  # Configurações do H2 console (útil para debug)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# Tracing Distribuído
+management:
+  tracing:
+    enabled: false
+  zipkin:
+    tracing:
+      endpoint:
+
+# Configurações de log para testes
+logging:
+  level:
+    root: WARN
+    integration.bdd: DEBUG
+    com.fastfood: DEBUG
+    org.springframework.test: INFO
+    org.hibernate.SQL: DEBUG
+
+azsvcbus:
+  connection-string: ${AZ_SVC_BUS_CONNECTION_STRING:Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;}
+
+server:
+  address: ${SERVER_ADDRESS:0.0.0.0}
+  port: ${SERVER_PORT:8085}
+  servlet:
+    context-path: /

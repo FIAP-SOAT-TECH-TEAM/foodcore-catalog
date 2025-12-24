@@ -1,0 +1,327 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.5'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.liquibase.gradle' version '2.2.0'
+	id 'jacoco'
+	id 'org.sonarqube' version '4.4.1.3373'
+	id 'com.diffplug.spotless' version '6.25.0'
+	id "org.springdoc.openapi-gradle-plugin" version "1.9.0"
+	id("co.uzzu.dotenv.gradle") version "4.0.0"
+}
+
+group = 'com.soat.fiap'
+version = '0.0.1'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	liquibaseRuntime {
+		extendsFrom implementation
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven {
+		name = "GitHubPackages"
+		url = uri("https://maven.pkg.github.com/FIAP-SOAT-TECH-TEAM/foodcore-shared")
+		credentials {
+			username = System.getenv("FOODCORE_SHARED_REPO_USERNAME") ?: env.FOODCORE_SHARED_REPO_USERNAME.value
+			password = System.getenv("FOODCORE_SHARED_REPO_TOKEN") ?: env.FOODCORE_SHARED_REPO_TOKEN.value
+		}
+	}
+}
+
+ext {
+	set('springCloudBom', "2024.0.0")
+	set('azureSpringCloudBom', "6.0.0")
+	set('cucumberBom', "7.31.0")
+	set('testContainersBom', "2.0.1")
+
+	set('mapstructVersion', "1.5.5.Final")
+	set('springdocVersion', "2.8.4")
+	set('picoli', "4.7.5")
+	set('foodcoreShared', "0.0.1")
+}
+
+dependencies {
+
+	// Github Packages
+	implementation "com.soat.fiap:foodcore-shared:${foodcoreShared}"
+
+	// Spring Boot
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+	// Azure
+	implementation 'com.azure.spring:spring-cloud-azure-starter-servicebus'
+
+	// Spring Cloud
+	implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-discoveryclient'
+
+	// Micrometer
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+
+	// Liquibase para migrações de banco de dados
+	implementation 'org.liquibase:liquibase-core'
+
+	// PostgreSQL driver
+	implementation 'org.postgresql:postgresql'
+
+	// Lombok e MapStruct
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	compileOnly "org.mapstruct:mapstruct:${mapstructVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+	// SpringDoc (Swagger/OpenAPI)
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${springdocVersion}"
+
+	// Testes
+	// Testes
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation ("io.cucumber:cucumber-java")
+	testImplementation ("io.cucumber:cucumber-spring")
+	testImplementation("org.testcontainers:testcontainers")
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.testcontainers:testcontainers-postgresql")
+	testImplementation "io.rest-assured:rest-assured"
+
+	// A Task generateOpenApiDocs é executada com Profile de teste, e precisa que a aplicação esteja em execução.
+	// Portanto, deixei como runtimeOnly para que seja incluída no classpath durante a execução.
+	// https://github.com/springdoc/springdoc-openapi-gradle-plugin
+	runtimeOnly 'com.h2database:h2'
+
+	// Liquibase runtime dependencies
+	liquibaseRuntime 'org.liquibase:liquibase-core'
+	liquibaseRuntime 'org.postgresql:postgresql'
+	liquibaseRuntime "info.picocli:picocli:${picoli}"
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudBom}"
+		mavenBom "com.azure.spring:spring-cloud-azure-dependencies:${azureSpringCloudBom}"
+		mavenBom "org.testcontainers:testcontainers-bom:${testContainersBom}"
+		mavenBom "io.cucumber:cucumber-bom:${cucumberBom}"
+	}
+}
+
+// Configuração do Liquibase para usar o arquivo de changelog
+liquibase {
+    activities {
+        main {
+            changeLogFile 'src/main/resources/db/changelog/db.changelog-master.yaml'
+            url      env.isPresent("SPRING_DATASOURCE_URL") ? env.SPRING_DATASOURCE_URL.value : 'jdbc:postgresql://localhost:5432/order'
+            username env.isPresent("SPRING_DATASOURCE_USERNAME") ? env.SPRING_DATASOURCE_USERNAME.value : 'postgres'
+            password env.isPresent("SPRING_DATASOURCE_PASSWORD") ? env.SPRING_DATASOURCE_PASSWORD.value : 'postgres'
+        }
+    }
+    runList = 'main'
+}
+
+// Integrar Spotless no build process - funciona automaticamente para todos
+tasks.named('compileJava') {
+	dependsOn 'spotlessCheck'
+}
+
+tasks.named('build') {
+	dependsOn 'spotlessCheck'
+}
+
+configurations {
+	cucumberRuntime {
+		extendsFrom testImplementation
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+tasks.register('cucumber') {
+	dependsOn assemble, testClasses
+	doLast {
+		javaexec {
+			main = "io.cucumber.core.cli.Main"
+			classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+			systemProperty "cucumber.filter.tags", System.getProperty("cucumber.filter.tags")
+			args = [
+				'--plugin',
+				'pretty',
+				'--plugin',
+				'html:target/cucumber-reports/cucumber.html',
+				'--plugin',
+				'junit:target/cucumber-reports/cucumber.xml',
+				'--plugin',
+				'json:target/cucumber-reports/cucumber.json',
+				'src/test/java/integration/bdd'
+			]
+		}
+	}
+}
+
+jacocoTestReport {
+	reports {
+		xml.required = true
+		html.required = true
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+				// Application main class
+				'**/FoodCoreApiApplication.java',
+				// Configuration classes
+				'**/config/**',
+				'**/*Config.java',
+				'**/*Configuration.java',
+				'**/*Properties.java',
+				// Exceptions
+				"**/exceptions/**",
+				// DTOs and Request/Response classes
+				'**/dto/**',
+				'**/request/**',
+				'**/response/**',
+				// MapStruct generated mappers
+				'**/mapper/**/*Impl.java',
+				'**/mapper/**/*MapperImpl*.java',
+				// Infrastructure adapters (controllers, repositories, etc.)
+				'**/infrastructure/in/web/api/controller/**',
+				'**/infrastructure/in/event/listener/**',
+				'**/infrastructure/in/schedulers/**',
+				'**/infrastructure/out/**/client/*Source*.java',
+				'**/infrastructure/out/**/client/*Client*.java',
+				'**/infrastructure/out/persistence/**/*Repository*.java',
+				'**/infrastructure/out/persistence/**/*DataSource*.java',
+				'**/infrastructure/out/persistence/**/*Entity*.java',
+				'**/infrastructure/out/persistence/**/*Converter*.java',
+				'**/infrastructure/out/persistence/**/*Populator*.java',
+				'**/infrastructure/out/persistence/**/*Mapper*.java',
+				'**/infrastructure/out/common/**/*Seeder*.java',
+				'**/infrastructure/out/event/publisher/**',
+				// Common infrastructure
+				'**/infrastructure/common/source/**',
+				'**/infrastructure/common/mapper/**',
+				'**/infrastructure/common/event/**',
+				// Package info files
+				'**/package-info.java'
+			])
+		}))
+	}
+}
+
+sonar {
+	properties {
+		property 'sonar.projectKey', 'FIAP-SOAT-TECH-TEAM_foodcore-catalog'
+		property "sonar.organization", "fiap-soat-tech-team"
+		property 'sonar.projectName', 'foodcore-catalog'
+		property 'sonar.host.url', 'https://sonarcloud.io'
+		property 'sonar.token', System.getenv("SONAR_CLOUD_TOKEN") ?: env.SONAR_CLOUD_TOKEN.value
+		property 'sonar.sources', 'src/main/java'
+		property 'sonar.tests', 'src/test/java'
+		property 'sonar.java.binaries', 'build/classes/java/main'
+		property 'sonar.java.test.binaries', 'build/classes/java/test'
+		property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/jacoco/test/jacocoTestReport.xml'
+		property 'sonar.exclusions', [
+			// Application main class
+			'**/FoodCoreApiApplication.java',
+			// Configuration classes
+			'**/config/**',
+			'**/*Config.java',
+			'**/*Configuration.java',
+			'**/*Properties.java',
+			// Exceptions
+			"**/exceptions/**",
+			// DTOs and Request/Response classes
+			'**/dto/**',
+			'**/request/**',
+			'**/response/**',
+			// MapStruct generated mappers
+			'**/mapper/**/*Impl.java',
+			'**/mapper/**/*MapperImpl*.java',
+			// Infrastructure adapters (controllers, repositories, etc.)
+			'**/infrastructure/in/web/api/controller/**',
+			'**/infrastructure/in/event/listener/**',
+			'**/infrastructure/in/schedulers/**',
+			'**/infrastructure/out/**/client/*Source*.java',
+			'**/infrastructure/out/**/client/*Client*.java',
+			'**/infrastructure/out/persistence/**/*Repository*.java',
+			'**/infrastructure/out/persistence/**/*DataSource*.java',
+			'**/infrastructure/out/persistence/**/*Entity*.java',
+			'**/infrastructure/out/persistence/**/*Converter*.java',
+			'**/infrastructure/out/persistence/**/*Populator*.java',
+			'**/infrastructure/out/persistence/**/*Mapper*.java',
+			'**/infrastructure/out/common/**/*Seeder*.java',
+			'**/infrastructure/out/event/publisher/**',
+			// Common infrastructure
+			'**/infrastructure/common/source/**',
+			'**/infrastructure/common/mapper/**',
+			'**/infrastructure/common/event/**',
+			// Package info files
+			'**/package-info.java'
+		].join(',')
+		property 'sonar.test.exclusions', '**/fixtures/**'
+	}
+}
+
+spotless {
+	java {
+		// Usa o Eclipse formatter com configurações customizadas
+		eclipse().configFile('spotless-formatter.xml')
+
+		// Remove imports não utilizados
+		removeUnusedImports()
+
+		// Organiza imports de acordo com o padrão do IntelliJ
+		importOrder('java', 'javax', 'org', 'com', '')
+
+		// Remove espaços em branco no final das linhas
+		trimTrailingWhitespace()
+
+		// Garante que arquivos terminem com nova linha
+		endWithNewline()
+
+		// Aplica formatação apenas nos arquivos Java do src
+		target 'src/**/*.java'
+
+		// Ignora arquivos gerados
+		targetExclude '**/generated/**', '**/build/**'
+
+		// Configurações específicas do IntelliJ
+		formatAnnotations()
+	}
+
+	// Formatação para arquivos Gradle
+	groovyGradle {
+		target '*.gradle'
+		greclipse()
+	}
+}
+
+openApi {
+	apiDocsUrl.set("http://localhost:8085/v3/api-docs")
+	outputDir.set(file("$buildDir/openapi"))
+	outputFileName.set("swagger.json")
+
+	customBootRun {
+		args.set([
+			"--spring.profiles.active=test"
+		])
+	}
+}

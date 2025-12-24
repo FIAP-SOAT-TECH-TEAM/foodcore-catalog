@@ -1,0 +1,95 @@
+spring:
+  application:
+    name: foodcore-catalog
+
+  threads:
+    virtual:
+      enabled: true
+
+  # Perfil padrão (development)
+  profiles:
+    active: local
+
+  # Configurações de banco de dados
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:}
+    username: ${SPRING_DATASOURCE_USERNAME:}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+
+  # JPA / Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: none
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+          format_sql: true
+          jdbc:
+            time_zone: UTC
+      show-sql: false
+
+  # Liquibase
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    contexts: prod # Contexto padrão é prod (será sobrescrito em local)
+
+  # SpringDoc
+  springdoc:
+    swagger-ui:
+      path: /swagger-ui.html
+      operations-sorter: alpha
+      tags-sorter: alpha
+      disable-swagger-default-url: true
+      doc-expansion: none
+      show-actuator: true
+
+  # Upload de arquivos
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 15MB
+
+azsvcbus:
+  connection-string: ${AZ_SVC_BUS_CONNECTION_STRING:}
+
+management:
+  # Tracing Distribuído
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_URL}/api/v2/spans
+
+# Configurações de logging
+logging:
+  level:
+    root: INFO
+    com.soat.fiap.food.core.api: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+    org.springdoc: DEBUG
+
+server:
+  address: ${SERVER_ADDRESS:}
+  port: ${SERVER_PORT:}
+  servlet:
+    context-path: /
+  compression:
+    enabled: true
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# Azure Storage Configuration
+azure:
+  storage:
+    connection-string: ${AZURE_STORAGE_CONNECTION_STRING:}
+    container-name: ${AZURE_STORAGE_CONTAINER_NAME:}

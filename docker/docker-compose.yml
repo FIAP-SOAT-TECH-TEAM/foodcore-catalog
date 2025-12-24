@@ -1,0 +1,68 @@
+services:
+  # Aplicação principal
+  catalog-ms:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        APP_PORT: ${SERVER_PORT}
+    image: foodcore-catalog-ms:latest
+    container_name: foodcore-catalog-ms
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:${SERVER_PORT}/api/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      catalog-ms-db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - fastfood-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  # Banco de dados PostgreSQL
+  catalog-ms-db:
+    image: postgres:16-alpine
+    container_name: foodcore-catalog-ms-db
+    ports:
+      - "${DB_PORT}:5432"
+    env_file:
+      - .env
+    volumes:
+      - catalog_ms_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    command: >
+      -c shared_buffers=256MB
+      -c max_connections=200
+      -c effective_cache_size=512MB
+      -c maintenance_work_mem=64MB
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+      -c work_mem=4MB
+      -c min_wal_size=1GB
+      -c max_wal_size=4GB
+      -c wal_level=logical
+    networks:
+      - fastfood-network
+
+networks:
+  fastfood-network:
+    driver: bridge
+
+volumes:
+  catalog_ms_postgres_data:
