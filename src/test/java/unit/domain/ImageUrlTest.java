@@ -30,7 +30,7 @@ class ImageUrlTest {
 		});
 
 		// Assert
-		assertEquals("URL da imagem não pode ser nula", exception.getMessage());
+		assertEquals("A url da imagem não pode ser nula", exception.getMessage());
 	}
 
 	@Test @DisplayName("Deve lançar exceção quando URL excede 500 caracteres")
