@@ -2,8 +2,8 @@ package com.soat.fiap.food.core.catalog.core.interfaceadapters.controller.catego
 
 import com.soat.fiap.food.core.catalog.core.application.usecases.category.UpdateCategoryImageInCatalogUseCase;
 import com.soat.fiap.food.core.catalog.core.domain.exceptions.CatalogNotFoundException;
-import com.soat.fiap.food.core.catalog.core.interfaceadapters.presenter.CategoryPresenter;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.CatalogGateway;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.presenter.CategoryPresenter;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.responses.CategoryResponse;
 import com.soat.fiap.food.core.shared.core.interfaceadapters.dto.FileUploadDTO;

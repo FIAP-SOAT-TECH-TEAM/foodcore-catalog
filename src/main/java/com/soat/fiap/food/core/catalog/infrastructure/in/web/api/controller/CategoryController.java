@@ -3,7 +3,6 @@ package com.soat.fiap.food.core.catalog.infrastructure.in.web.api.controller;
 import java.io.IOException;
 import java.util.List;
 
-import com.soat.fiap.food.core.catalog.core.interfaceadapters.controller.category.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.controller.category.*;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.requests.CategoryRequest;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.responses.CategoryResponse;

@@ -1,8 +1,8 @@
 package com.soat.fiap.food.core.catalog.core.interfaceadapters.controller.product;
 
 import com.soat.fiap.food.core.catalog.core.application.usecases.product.GetProductByIdUseCase;
-import com.soat.fiap.food.core.catalog.core.interfaceadapters.presenter.ProductPresenter;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.CatalogGateway;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.presenter.ProductPresenter;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.responses.ProductResponse;
 

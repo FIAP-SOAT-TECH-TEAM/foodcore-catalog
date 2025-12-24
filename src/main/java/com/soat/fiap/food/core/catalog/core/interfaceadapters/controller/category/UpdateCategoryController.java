@@ -2,8 +2,8 @@ package com.soat.fiap.food.core.catalog.core.interfaceadapters.controller.catego
 
 import com.soat.fiap.food.core.catalog.core.application.inputs.mappers.CategoryMapper;
 import com.soat.fiap.food.core.catalog.core.application.usecases.category.UpdateCategoryInCatalogUseCase;
-import com.soat.fiap.food.core.catalog.core.interfaceadapters.presenter.CategoryPresenter;
 import com.soat.fiap.food.core.catalog.core.interfaceadapters.gateways.CatalogGateway;
+import com.soat.fiap.food.core.catalog.core.interfaceadapters.presenter.CategoryPresenter;
 import com.soat.fiap.food.core.catalog.infrastructure.common.source.CatalogDataSource;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.requests.CategoryRequest;
 import com.soat.fiap.food.core.catalog.infrastructure.in.web.api.dto.responses.CategoryResponse;
