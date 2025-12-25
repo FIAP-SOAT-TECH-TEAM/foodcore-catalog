@@ -18,10 +18,10 @@ public record ImageUrl(String imageUrl) {
 	 *             se a URL ultrapassar o tamanho permitido
 	 */
 	public ImageUrl {
-		Objects.requireNonNull(imageUrl, "URL da imagem não pode ser nula");
+		Objects.requireNonNull(imageUrl, "A url da imagem não pode ser nula");
 
 		if (imageUrl.length() > 500) {
-			throw new IllegalArgumentException("Url da imagem deve ter no máximo 500 caracteres");
+			throw new IllegalArgumentException("A url da imagem deve ter no máximo 500 caracteres");
 		}
 	}
 }
