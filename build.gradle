@@ -63,7 +63,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
 	// Azure
 	implementation 'com.azure.spring:spring-cloud-azure-starter-servicebus'
