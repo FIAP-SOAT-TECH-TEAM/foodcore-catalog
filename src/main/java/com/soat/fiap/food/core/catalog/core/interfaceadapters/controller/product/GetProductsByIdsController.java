@@ -26,7 +26,7 @@ public class GetProductsByIdsController {
 	 * @return os produtos encontrados
 	 */
 	public static List<ProductResponse> getProductsByIds(List<Long> productIds, ProductDataSource productDataSource) {
-		log.debug("Buscando produstos pela lista de IDs {}", productIds);
+		log.info("Buscando produstos pela lista de IDs: {}", productIds);
 
 		var gateway = new ProductGateway(productDataSource);
 
