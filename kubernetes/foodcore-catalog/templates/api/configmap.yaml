@@ -10,4 +10,4 @@ data:
   SERVER_PORT: {{ .Values.api.server.port | quote }}
   SPRING_PROFILES_ACTIVE: {{ .Values.api.server.profilesActive | quote }}
   
-  # ZIPKIN_URL:
+  ZIPKIN_URL: foodcore-monitor-zipkin-service
