@@ -1,7 +1,6 @@
 🍔 Food Core Catalog - Helm Chart Deployment
 🎯 Implementado com Clean Architecture e DDD
 
-
 🚀 Microsserviço de catálogo de produtos foi implantado com sucesso! 
 🌐 Consulte FQDN público do APIM
 
