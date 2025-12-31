@@ -1,0 +1,25 @@
+# Github Packages
+FOODCORE_SHARED_REPO_USERNAME=user_3c9f2a
+FOODCORE_SHARED_REPO_TOKEN=repo_token
+
+# SONAR
+SONAR_CLOUD_TOKEN=sonar_token
+
+# Banco de Dados PostgreSQL
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/app_db_7f3
+SPRING_DATASOURCE_USERNAME=db_user_9a2
+SPRING_DATASOURCE_PASSWORD=pwd_4F7Qx9L2
+
+# SERVER
+SERVER_ADDRESS=0.0.0.0
+SERVER_PORT=8193
+
+# Azure Service Bus
+AZ_SVC_BUS_CONNECTION_STRING=Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;
+
+# Zipkin
+ZIPKIN_URL=http://localhost:9411
+
+# Azure Storage
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1;
+AZURE_STORAGE_CONTAINER_NAME=container_5c8a
