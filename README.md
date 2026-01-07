@@ -11,6 +11,7 @@
 
 </div>
 
+
 Microsserviço responsável pelo gerenciamento de catálogo de produtos e categorias do sistema FoodCore. Desenvolvido como parte do curso de Arquitetura de Software da FIAP (Tech Challenge).
 
 <div align="center">
