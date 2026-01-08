@@ -23,10 +23,10 @@ api:
 
   resources:
     requests:
-      cpu: 500m
+      cpu: 300m
       memory: 512Mi
     limits:
-      cpu: 900m
+      cpu: 750m
       memory: 1024Mi
 
   ingress:
