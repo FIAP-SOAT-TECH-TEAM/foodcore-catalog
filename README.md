@@ -1,7 +1,7 @@
 # 🍔 FoodCore Catalog
 
 <div align="center">
-  
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=FIAP-SOAT-TECH-TEAM_foodcore-catalog&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=FIAP-SOAT-TECH-TEAM_foodcore-catalog)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=FIAP-SOAT-TECH-TEAM_foodcore-catalog&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=FIAP-SOAT-TECH-TEAM_foodcore-catalog)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=FIAP-SOAT-TECH-TEAM_foodcore-catalog&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=FIAP-SOAT-TECH-TEAM_foodcore-catalog)
@@ -10,7 +10,6 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=FIAP-SOAT-TECH-TEAM_foodcore-catalog&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=FIAP-SOAT-TECH-TEAM_foodcore-catalog)
 
 </div>
-
 
 Microsserviço responsável pelo gerenciamento de catálogo de produtos e categorias do sistema FoodCore. Desenvolvido como parte do curso de Arquitetura de Software da FIAP (Tech Challenge).
 
@@ -120,19 +119,23 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 <summary>Expandir para mais detalhes</summary>
 
 ### Backend
+
 - **Java 21**: Linguagem principal
 - **Spring Boot 3.4**: Framework base
 - **Spring Data JPA**: Persistência
 - **MapStruct / Lombok**: Produtividade
 
 ### Banco de Dados
+
 - **PostgreSQL**: Banco relacional
 - **Liquibase**: Migrations
 
 ### Storage
+
 - **Azure Blob Storage**: Imagens de produtos
 
 ### Qualidade
+
 - **SonarCloud**: Análise estática
 - **JUnit 5 + Mockito**: Testes unitários
 - **Cucumber**: Testes BDD
@@ -168,6 +171,7 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 > Durante o deploy dos microsserviços, Pods podem ficar com status **Pending** e o seguinte erro pode aparecer:
 >
 > <img src=".github/images/error.jpeg" alt="Error" />
+> <img src=".github/images/erroDeploy.jpeg" alt="Error" />
 >
 > **Causa**: O cluster atingiu o limite máximo de VMs permitido pela quota e não há recursos computacionais (CPU/memória) disponíveis nos nós existentes.
 >
@@ -180,6 +184,7 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 <h2 id="instalacao-e-uso">🚀 Instalação e Uso</h2>
 
 ### Pré-requisitos
+
 - Java 21
 - Docker e Docker Compose
 - Gradle
@@ -218,6 +223,7 @@ docker-compose -f docker/docker-compose.yml up -d
 | `POST` | `/api/catalog/products/{id}/image` | Upload de imagem |
 
 ### Documentação
+
 - **Swagger UI**: `http://localhost:8080/swagger-ui.html`
 
 ---
