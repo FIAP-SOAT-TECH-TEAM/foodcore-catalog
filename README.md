@@ -271,84 +271,6 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 ---
 
 <h2 id="diagramas-arquitetura">📊 Diagramas de Arquitetura</h2>
-
-```mermaid
-sequenceDiagram
-    autonumber
-
-    participant Client as 🖥️ Cliente
-    participant Order as 📦 Order Service
-    participant SB as 🔄 Azure Service Bus
-    participant Catalog as 📚 Catalog Service
-    participant Payment as 💳 Payment Service
-
-    Note over Client,Payment: 🎭 SAGA COREOGRAFADA - Sem Orquestrador Central
-
-    rect rgb(34, 197, 94, 0.1)
-        Note over Client,Payment: ✅ FLUXO PRINCIPAL - Happy Path
-
-        Client->>+Order: POST /orders (Criar Pedido)
-        Order->>Order: Validar e persistir pedido
-        Order-->>-Client: 201 Created (orderId)
-
-        Order--)SB: 📤 Publish: order.created.topic
-
-        SB--)Catalog: 📥 Subscribe: catalog.order.created.topic.subscription
-        activate Catalog
-        Catalog->>Catalog: Reservar estoque (stock.debit)
-        Catalog--)SB: 📤 Publish: stock.debit.queue
-        deactivate Catalog
-
-        SB--)Payment: 📥 Consume: stock.debit.queue
-        activate Payment
-        Payment->>Payment: Gerar QR Code / Processar pagamento
-        Payment--)SB: 📤 Publish: payment.approved.queue
-        deactivate Payment
-
-        SB--)Order: 📥 Consume: payment.approved.queue
-        activate Order
-        Order->>Order: Atualizar status → PAID
-        Order--)SB: 📤 Publish: order.ready.queue
-        deactivate Order
-    end
-
-    rect rgb(239, 68, 68, 0.1)
-        Note over Client,Payment: ❌ FLUXO COMPENSATÓRIO - Saga Rollback
-
-        Client->>+Order: DELETE /orders/{id} (Cancelar)
-        Order->>Order: Marcar como CANCELED
-        Order-->>-Client: 200 OK
-
-        Order--)SB: 📤 Publish: order.canceled.topic
-
-        par Compensação Paralela
-            SB--)Catalog: 📥 Subscribe: catalog.order.canceled.topic.subscription
-            activate Catalog
-            Catalog->>Catalog: Reverter estoque
-            Catalog--)SB: 📤 Publish: stock.reversal.queue
-            deactivate Catalog
-        and
-            SB--)Payment: 📥 Subscribe: payment.order.canceled.topic.subscription
-            activate Payment
-            Payment->>Payment: Cancelar/Estornar pagamento
-            deactivate Payment
-        end
-    end
-
-    rect rgb(251, 191, 36, 0.1)
-        Note over Payment,SB: ⏰ TIMEOUT - Pagamento Expirado
-
-        Payment->>Payment: Scheduler detecta expiração
-        Payment--)SB: 📤 Publish: payment.expired.queue
-
-        SB--)Order: 📥 Consume: payment.expired.queue
-        activate Order
-        Order->>Order: Atualizar status → EXPIRED
-        Order--)SB: 📤 Publish: order.canceled.topic
-        deactivate Order
-    end
-```
-
 <details>
 <summary>Expandir para mais detalhes</summary>
 
@@ -363,7 +285,7 @@ Diagrama de sequência demonstrando o padrão **Choreographed Saga** implementad
 - Fluxo compensatório: Rollback paralelo em caso de cancelamento
 - Timeout: Expiração automática de pagamentos
 
-
+<img src="./docs/diagrams/sequence-diagram.png" alt="Error" />
 
 ---
 
