@@ -285,7 +285,7 @@ Diagrama de sequência demonstrando o padrão **Choreographed Saga** implementad
 - Fluxo compensatório: Rollback paralelo em caso de cancelamento
 - Timeout: Expiração automática de pagamentos
 
-<img src="docs/diagrams/sequence-diagram.png" alt="Error" />
+<img src="docs/diagrams/sequence-diagram.png" alt="Arch Sequencial Diagram" />
 
 ---
 
