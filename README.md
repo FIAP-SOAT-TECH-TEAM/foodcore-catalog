@@ -19,6 +19,8 @@ Microsserviço responsável pelo gerenciamento de catálogo de produtos e catego
   <a href="#infra">Infraestrutura</a> •
   <a href="#tecnologias">Tecnologias</a> •
   <a href="#debitos-tecnicos">Débitos Técnicos</a> •
+  <a href="#diagramas-dominio">Diagramas de Domínio</a> •
+  <a href="#diagramas-arquitetura">Diagramas de Arquitetura</a> •
   <a href="#instalacao-e-uso">Instalação e Uso</a> •
   <a href="#apis">APIs</a> •
   <a href="#contribuicao">Contribuição</a>
