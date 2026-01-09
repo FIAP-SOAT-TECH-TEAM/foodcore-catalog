@@ -254,6 +254,9 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 
 <h2 id="diagramas">📊 Diagramas</h2>
 
+<details>
+<summary>Expandir para mais detalhes</summary>
+
 ### 🎭 Saga Coreografada (Comunicação Assíncrona)
 
 Diagrama de sequência demonstrando o padrão **Choreographed Saga** implementado para transações distribuídas via Azure Service Bus.
