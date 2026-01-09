@@ -39,27 +39,28 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 
 ### Principais Recursos
 
-| Recurso | Descrição |
-|---------|-----------|
-| **Produtos** | Criar, editar, listar e remover produtos |
-| **Categorias** | Organização por tipo de produto |
-| **Imagens** | Upload para Azure Blob Storage |
-| **Busca** | Filtros por categoria, nome, preço |
+| Recurso        | Descrição                                |
+| -------------- | ---------------------------------------- |
+| **Produtos**   | Criar, editar, listar e remover produtos |
+| **Categorias** | Organização por tipo de produto          |
+| **Imagens**    | Upload para Azure Blob Storage           |
+| **Busca**      | Filtros por categoria, nome, preço       |
 
 ---
+
 <h2 id="apis">📡 APIs</h2>
 
 ### Endpoints Principais
 
-| Método | Endpoint | Ingress Port | Descrição |
-|--------|----------|--------------|-----------|
-| `GET` | `/catalog/products` | 443 (Https) | Listar produtos |
-| `GET` | `/catalog/products/{id}` | 443 (Https) | Buscar produto por ID |
-| `POST` | `/catalog/products` | 443 (Https) | Criar produto |
-| `PUT` | `/catalog/products/{id}` | 443 (Https) | Atualizar produto |
-| `DELETE` | `/catalog/products/{id}` | 443 (Https) | Remover produto |
-| `GET` | `/catalog/categories` | 443 (Https) | Listar categorias |
-| `POST` | `/catalog/products/{id}/image` | 443 (Https) | Upload de imagem |
+| Método   | Endpoint                       | Ingress Port | Descrição             |
+| -------- | ------------------------------ | ------------ | --------------------- |
+| `GET`    | `/catalog/products`            | 443 (Https)  | Listar produtos       |
+| `GET`    | `/catalog/products/{id}`       | 443 (Https)  | Buscar produto por ID |
+| `POST`   | `/catalog/products`            | 443 (Https)  | Criar produto         |
+| `PUT`    | `/catalog/products/{id}`       | 443 (Https)  | Atualizar produto     |
+| `DELETE` | `/catalog/products/{id}`       | 443 (Https)  | Remover produto       |
+| `GET`    | `/catalog/categories`          | 443 (Https)  | Listar categorias     |
+| `POST`   | `/catalog/products/{id}/image` | 443 (Https)  | Upload de imagem      |
 
 > ⚠️ A URL Base pode ser obtida via output terraform `apim_gateway_url` (foodcore-infra).
 
@@ -92,22 +93,22 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 
 ### ⚙️ Camadas da Arquitetura
 
-| Camada | Componentes |
-|--------|-------------|
-| **Domínio** | `Product`, `Category`, `Details`, `ImageUrl` |
-| **Aplicação** | Use Cases de produtos e categorias |
-| **Interface** | Controllers REST, Presenters, Gateways |
-| **Infraestrutura** | PostgreSQL, Azure Blob Storage |
+| Camada             | Componentes                                  |
+| ------------------ | -------------------------------------------- |
+| **Domínio**        | `Product`, `Category`, `Details`, `ImageUrl` |
+| **Aplicação**      | Use Cases de produtos e categorias           |
+| **Interface**      | Controllers REST, Presenters, Gateways       |
+| **Infraestrutura** | PostgreSQL, Azure Blob Storage               |
 
 ---
 
 ### 🏗️ Microsserviços do Ecossistema
 
-| Microsserviço | Responsabilidade | Repositório |
-|---------------|------------------|-------------|
-| **foodcore-auth** | Autenticação (Azure Function + Cognito) | [foodcore-auth](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-auth) |
-| **foodcore-order** | Gerenciamento de pedidos | [foodcore-order](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-order) |
-| **foodcore-payment** | Processamento de pagamentos | [foodcore-payment](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-payment) |
+| Microsserviço        | Responsabilidade                        | Repositório                                                                 |
+| -------------------- | --------------------------------------- | --------------------------------------------------------------------------- |
+| **foodcore-auth**    | Autenticação (Azure Function + Cognito) | [foodcore-auth](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-auth)       |
+| **foodcore-order**   | Gerenciamento de pedidos                | [foodcore-order](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-order)     |
+| **foodcore-payment** | Processamento de pagamentos             | [foodcore-payment](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-payment) |
 | **foodcore-catalog** | Catálogo de produtos (este repositório) | [foodcore-catalog](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-catalog) |
 
 </details>
@@ -121,14 +122,14 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 
 ### Recursos Kubernetes
 
-| Recurso | Descrição |
-|---------|-----------|
-| **Deployment** | Pods com health probes, limites de recursos |
-| **Service** | Exposição interna no cluster |
-| **Ingress** | Roteamento via Azure Application Gateway (LB Layer 7) |
-| **ConfigMap** | Configurações não sensíveis |
-| **Secrets** | Credenciais (Database, Azure Blob) |
-| **HPA** | Escalabilidade automática |
+| Recurso        | Descrição                                             |
+| -------------- | ----------------------------------------------------- |
+| **Deployment** | Pods com health probes, limites de recursos           |
+| **Service**    | Exposição interna no cluster                          |
+| **Ingress**    | Roteamento via Azure Application Gateway (LB Layer 7) |
+| **ConfigMap**  | Configurações não sensíveis                           |
+| **Secrets**    | Credenciais (Database, Azure Blob)                    |
+| **HPA**        | Escalabilidade automática                             |
 
 - O **Application Gateway** recebe tráfego em um **Frontend IP privado**
 - Roteamento direto para os IPs dos Pods (**Azure CNI + Overlay**)
@@ -138,11 +139,11 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 
 ### Integrações
 
-| Serviço | Tipo | Descrição |
-|---------|------|-----------|
-| **PostgreSQL** | Síncrona | Persistência de dados |
-| **Azure Blob Storage** | Síncrona | Armazenamento de imagens |
-| **Azure Service Bus** | Assíncrona | Eventos de catálogo |
+| Serviço                | Tipo       | Descrição                |
+| ---------------------- | ---------- | ------------------------ |
+| **PostgreSQL**         | Síncrona   | Persistência de dados    |
+| **Azure Blob Storage** | Síncrona   | Armazenamento de imagens |
+| **Azure Service Bus**  | Assíncrona | Eventos de catálogo      |
 
 ### 🔐 Azure Key Vault Provider (CSI)
 
@@ -194,14 +195,14 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 <details>
 <summary>Expandir para mais detalhes</summary>
 
-| Débito | Descrição | Impacto |
-|--------|-----------|---------|
-| **Azure Function de Imagens** | Criar Azure Function para atualização de imagens - remover essa responsabilidade do microsserviço | Separação de responsabilidades |
-| **Separar Estoque** | Extrair gerenciamento de estoque para microsserviço dedicado (mantido simples por ora) | Futuro: escalabilidade de estoque |
-| **Transactional Outbox Pattern** | Implementar padrão para evitar escrita duplicada na SAGA coreografada | Garate síncronia entre atualização do DB e publicação de eventos |
-| **Workload Identity** | Usar Workload Identity para Pods acessarem recursos Azure (atual: Azure Key Vault Provider) | Melhora segurança e gestão de credenciais |
-| **OpenTelemetry** | Migrar de Micrometer para OpenTelemetry | Padronização de observabilidade |
-| **WAF Layer** | Implementar camada WAF antes do API Gateway para proteção OWASP TOP 10 | Segurança adicional |
+| Débito                           | Descrição                                                                                         | Impacto                                                          |
+| -------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Azure Function de Imagens**    | Criar Azure Function para atualização de imagens - remover essa responsabilidade do microsserviço | Separação de responsabilidades                                   |
+| **Separar Estoque**              | Extrair gerenciamento de estoque para microsserviço dedicado (mantido simples por ora)            | Futuro: escalabilidade de estoque                                |
+| **Transactional Outbox Pattern** | Implementar padrão para evitar escrita duplicada na SAGA coreografada                             | Garate síncronia entre atualização do DB e publicação de eventos |
+| **Workload Identity**            | Usar Workload Identity para Pods acessarem recursos Azure (atual: Azure Key Vault Provider)       | Melhora segurança e gestão de credenciais                        |
+| **OpenTelemetry**                | Migrar de Micrometer para OpenTelemetry                                                           | Padronização de observabilidade                                  |
+| **WAF Layer**                    | Implementar camada WAF antes do API Gateway para proteção OWASP TOP 10                            | Segurança adicional                                              |
 
 <h2 id="limitacoes-quota">Limitações de Quota (Azure for Students)</h2>
 
@@ -231,46 +232,50 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 <details>
 <summary>Expandir para mais detalhes</summary>
 
-| Termo | Descrição |
-|-------|-----------|
-| **Admin** | Usuário com privilégios elevados para gestão do sistema |
-| **Adquirente** | Instituição financeira que processa pagamentos (Mercado Pago) |
-| **Authentication** | Validação da identidade do usuário |
-| **Authorization** | Controle de acesso baseado em roles |
-| **Catalog** | Conjunto de produtos disponíveis |
-| **Category** | Classificação de produtos (lanches, bebidas, sobremesas) |
-| **Combo** | Conjunto personalizado: lanche + acompanhamento + bebida + sobremesa |
-| **Customer** | Cliente que realiza pedidos |
-| **Guest** | Cliente não identificado |
-| **Order** | Pedido com itens selecionados |
-| **Order Item** | Produto específico dentro de um pedido |
-| **Payment** | Processamento de pagamento via Mercado Pago |
-| **Product** | Item disponível para venda |
-| **Role** | Papel do usuário (ADMIN, ATENDENTE, GUEST) |
+| Termo              | Descrição                                                            |
+| ------------------ | -------------------------------------------------------------------- |
+| **Admin**          | Usuário com privilégios elevados para gestão do sistema              |
+| **Adquirente**     | Instituição financeira que processa pagamentos (Mercado Pago)        |
+| **Authentication** | Validação da identidade do usuário                                   |
+| **Authorization**  | Controle de acesso baseado em roles                                  |
+| **Catalog**        | Conjunto de produtos disponíveis                                     |
+| **Category**       | Classificação de produtos (lanches, bebidas, sobremesas)             |
+| **Combo**          | Conjunto personalizado: lanche + acompanhamento + bebida + sobremesa |
+| **Customer**       | Cliente que realiza pedidos                                          |
+| **Guest**          | Cliente não identificado                                             |
+| **Order**          | Pedido com itens selecionados                                        |
+| **Order Item**     | Produto específico dentro de um pedido                               |
+| **Payment**        | Processamento de pagamento via Mercado Pago                          |
+| **Product**        | Item disponível para venda                                           |
+| **Role**           | Papel do usuário (ADMIN, ATENDENTE, GUEST)                           |
 
 </details>
 
 ---
 
-<h2 id="diagramas">📊 Diagramas</h2>
+<h2 id="diagramas-dominio">📊 Diagramas de Domínio</h2>
 
 <details>
 <summary>Expandir para mais detalhes</summary>
 
-### 🎭 Saga Coreografada (Comunicação Assíncrona)
+### Fluxo de Criação de Pedido
 
-Diagrama de sequência demonstrando o padrão **Choreographed Saga** implementado para transações distribuídas via Azure Service Bus.
+![Eventos de domínio - Criação de Pedido](docs/diagrams/order-created.svg)
 
-**Características:**
-- Sem orquestrador central - cada serviço reage a eventos
-- Fluxo principal (Happy Path): Order → Catalog → Payment → Order
-- Fluxo compensatório: Rollback paralelo em caso de cancelamento
-- Timeout: Expiração automática de pagamentos
+### Fluxo de Preparação e Entrega
+
+![Eventos de domínio - Preparação e Entrega](docs/diagrams/order-preparing.svg)
+
+</details>
+
+---
+
+<h2 id="diagramas-arquitetura">📊 Diagramas de Arquitetura</h2>
 
 ```mermaid
 sequenceDiagram
     autonumber
-    
+
     participant Client as 🖥️ Cliente
     participant Order as 📦 Order Service
     participant SB as 🔄 Azure Service Bus
@@ -281,25 +286,25 @@ sequenceDiagram
 
     rect rgb(34, 197, 94, 0.1)
         Note over Client,Payment: ✅ FLUXO PRINCIPAL - Happy Path
-        
+
         Client->>+Order: POST /orders (Criar Pedido)
         Order->>Order: Validar e persistir pedido
         Order-->>-Client: 201 Created (orderId)
-        
+
         Order--)SB: 📤 Publish: order.created.topic
-        
+
         SB--)Catalog: 📥 Subscribe: catalog.order.created.topic.subscription
         activate Catalog
         Catalog->>Catalog: Reservar estoque (stock.debit)
         Catalog--)SB: 📤 Publish: stock.debit.queue
         deactivate Catalog
-        
+
         SB--)Payment: 📥 Consume: stock.debit.queue
         activate Payment
         Payment->>Payment: Gerar QR Code / Processar pagamento
         Payment--)SB: 📤 Publish: payment.approved.queue
         deactivate Payment
-        
+
         SB--)Order: 📥 Consume: payment.approved.queue
         activate Order
         Order->>Order: Atualizar status → PAID
@@ -309,13 +314,13 @@ sequenceDiagram
 
     rect rgb(239, 68, 68, 0.1)
         Note over Client,Payment: ❌ FLUXO COMPENSATÓRIO - Saga Rollback
-        
+
         Client->>+Order: DELETE /orders/{id} (Cancelar)
         Order->>Order: Marcar como CANCELED
         Order-->>-Client: 200 OK
-        
+
         Order--)SB: 📤 Publish: order.canceled.topic
-        
+
         par Compensação Paralela
             SB--)Catalog: 📥 Subscribe: catalog.order.canceled.topic.subscription
             activate Catalog
@@ -332,10 +337,10 @@ sequenceDiagram
 
     rect rgb(251, 191, 36, 0.1)
         Note over Payment,SB: ⏰ TIMEOUT - Pagamento Expirado
-        
+
         Payment->>Payment: Scheduler detecta expiração
         Payment--)SB: 📤 Publish: payment.expired.queue
-        
+
         SB--)Order: 📥 Consume: payment.expired.queue
         activate Order
         Order->>Order: Atualizar status → EXPIRED
@@ -344,6 +349,22 @@ sequenceDiagram
     end
 ```
 
+<details>
+<summary>Expandir para mais detalhes</summary>
+
+### 🎭 Saga Coreografada (Comunicação Assíncrona)
+
+Diagrama de sequência demonstrando o padrão **Choreographed Saga** implementado para transações distribuídas via Azure Service Bus.
+
+**Características:**
+
+- Sem orquestrador central - cada serviço reage a eventos
+- Fluxo principal (Happy Path): Order → Catalog → Payment → Order
+- Fluxo compensatório: Rollback paralelo em caso de cancelamento
+- Timeout: Expiração automática de pagamentos
+
+
+
 ---
 
 ### 🔄 Comunicação HTTP (Síncrona)
@@ -351,6 +372,7 @@ sequenceDiagram
 Diagrama de fluxo mapeando as requisições HTTP diretas entre microsserviços.
 
 **Fluxos:**
+
 - Clientes → API Gateway → Microsserviços
 - Order ↔ Catalog: Validação de produtos
 - Order ↔ Payment: Gestão de pagamentos
@@ -363,60 +385,30 @@ flowchart TB
         MP[("🏦 Mercado Pago API")]
     end
 
-    subgraph GATEWAY["🚪 API GATEWAY"]
-        direction TB
-        APIM[["🔐 Azure API Management"]]
-    end
-
     subgraph INTERNAL["🏠 MICROSSERVIÇOS INTERNOS"]
         direction TB
-        
+
         subgraph ORDER_SVC["📦 Order Service"]
             ORDER_API["/api/v1/orders"]
         end
-        
+
         subgraph CATALOG_SVC["📚 Catalog Service"]
             CATALOG_API["/api/v1/products"]
         end
-        
+
         subgraph PAYMENT_SVC["💳 Payment Service"]
             PAYMENT_API["/api/v1/payments"]
         end
-        
-        subgraph AUTH_SVC["🔑 Auth Service"]
-            AUTH_API["Azure Function"]
-        end
     end
 
-    subgraph CLIENT["👤 CONSUMIDORES"]
-        direction TB
-        WEB["🌐 Web App"]
-        MOBILE["📱 Mobile App"]
-        TOTEM["🖥️ Totem"]
-    end
+    %% FLUXO SAGA COREOGRAFADA (Assíncrono)
+    %% Order inicia o processo disparando eventos
+    ORDER_API -..->|"Evento / Async"| CATALOG_API
+    ORDER_API -..->|"Evento / Async"| PAYMENT_API
 
-    WEB & MOBILE & TOTEM -->|"HTTPS"| APIM
-    
-    APIM -->|"JWT Validation"| AUTH_API
-    APIM -->|"HTTP/REST"| ORDER_API
-    APIM -->|"HTTP/REST"| CATALOG_API
-    APIM -->|"HTTP/REST"| PAYMENT_API
-
-    ORDER_API <-->|"GET /products/{id}"| CATALOG_API
-    ORDER_API <-->|"POST /payments"| PAYMENT_API
-
-    PAYMENT_API <-->|"HTTPS/mTLS"| MP
+    %% INTEGRAÇÃO EXTERNA (Síncrona)
+    PAYMENT_API -->|"HTTPS/mTLS"| MP
 ```
-
----
-
-### Fluxo de Criação de Pedido
-
-![Eventos de domínio - Criação de Pedido](docs/diagrams/order-created.svg)
-
-### Fluxo de Preparação e Entrega
-
-![Eventos de domínio - Preparação e Entrega](docs/diagrams/order-preparing.svg)
 
 </details>
 
@@ -430,9 +422,11 @@ flowchart TB
 ### Pipeline
 
 1. **Pull Request**
+
    - Preencher template de pull request adequadamente
 
 2. **Revisão e Aprovação**
+
    - Mínimo 1 aprovação de CODEOWNER
 
 3. **Merge para Main**
