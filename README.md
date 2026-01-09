@@ -47,6 +47,30 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 | **Busca** | Filtros por categoria, nome, preço |
 
 ---
+<h2 id="apis">📡 APIs</h2>
+
+### Endpoints Principais
+
+| Método | Endpoint | Ingress Port | Descrição |
+|--------|----------|--------------|-----------|
+| `GET` | `/catalog/products` | 443 (Https) | Listar produtos |
+| `GET` | `/catalog/products/{id}` | 443 (Https) | Buscar produto por ID |
+| `POST` | `/catalog/products` | 443 (Https) | Criar produto |
+| `PUT` | `/catalog/products/{id}` | 443 (Https) | Atualizar produto |
+| `DELETE` | `/catalog/products/{id}` | 443 (Https) | Remover produto |
+| `GET` | `/catalog/categories` | 443 (Https) | Listar categorias |
+| `POST` | `/catalog/products/{id}/image` | 443 (Https) | Upload de imagem |
+
+> ⚠️ A URL Base pode ser obtida via output terraform `apim_gateway_url` (foodcore-infra).
+
+### Documentação
+
+- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **OpenAPI**: `http://localhost:8080/v3/api-docs`
+
+> ⚠️ A porta pode mudar em decorrência da variável de ambiente: `SERVER_PORT`.
+
+---
 
 <h2 id="arquitetura">🧱 Arquitetura</h2>
 
@@ -101,10 +125,16 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 |---------|-----------|
 | **Deployment** | Pods com health probes, limites de recursos |
 | **Service** | Exposição interna no cluster |
-| **Ingress** | Roteamento: `/api/catalog/*` |
+| **Ingress** | Roteamento via Azure Application Gateway (LB Layer 7) |
 | **ConfigMap** | Configurações não sensíveis |
 | **Secrets** | Credenciais (Database, Azure Blob) |
 | **HPA** | Escalabilidade automática |
+
+- O **Application Gateway** recebe tráfego em um **Frontend IP privado**
+- Roteamento direto para os IPs dos Pods (**Azure CNI + Overlay**)
+- Path exposto: `/catalog`
+
+> ⚠️ Após o deploy (CD), aguarde cerca de **5 minutos** para que o **AGIC** finalize a configuração do Application Gateway.
 
 ### Integrações
 
@@ -113,6 +143,16 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 | **PostgreSQL** | Síncrona | Persistência de dados |
 | **Azure Blob Storage** | Síncrona | Armazenamento de imagens |
 | **Azure Service Bus** | Assíncrona | Eventos de catálogo |
+
+### 🔐 Azure Key Vault Provider (CSI)
+
+- Sincroniza secrets do Azure Key Vault com Secrets do Kubernetes
+- Monta volumes CSI com `tmpfs` dentro dos Pods
+- Utiliza o CRD **SecretProviderClass**
+
+> ⚠️ Caso o valor de uma secret seja alterado no Key Vault, é necessário **reiniciar os Pods**, pois variáveis de ambiente são injetadas apenas na inicialização.
+>
+> Referência: <https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-configuration-options>
 
 </details>
 
@@ -154,14 +194,14 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 <details>
 <summary>Expandir para mais detalhes</summary>
 
-### 🔴 Alta Prioridade
-
 | Débito | Descrição | Impacto |
 |--------|-----------|---------|
 | **Azure Function de Imagens** | Criar Azure Function para atualização de imagens - remover essa responsabilidade do microsserviço | Separação de responsabilidades |
 | **Separar Estoque** | Extrair gerenciamento de estoque para microsserviço dedicado (mantido simples por ora) | Futuro: escalabilidade de estoque |
-| **Workload Identity** | Usar Workload Identity para Pods (atual: Azure Key Vault Provider) | Segurança |
-| **OpenTelemetry** | Migrar de Zipkin/Micrometer para OpenTelemetry | Padronização |
+| **Transactional Outbox Pattern** | Implementar padrão para evitar escrita duplicada na SAGA coreografada | Garate síncronia entre atualização do DB e publicação de eventos |
+| **Workload Identity** | Usar Workload Identity para Pods acessarem recursos Azure (atual: Azure Key Vault Provider) | Melhora segurança e gestão de credenciais |
+| **OpenTelemetry** | Migrar de Micrometer para OpenTelemetry | Padronização de observabilidade |
+| **WAF Layer** | Implementar camada WAF antes do API Gateway para proteção OWASP TOP 10 | Segurança adicional |
 
 <h2 id="limitacoes-quota">Limitações de Quota (Azure for Students)</h2>
 
@@ -186,6 +226,86 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 
 ---
 
+<h2 id="dicionario">📖 Dicionário de Linguagem Ubíqua</h2>
+
+<details>
+<summary>Expandir para mais detalhes</summary>
+
+| Termo | Descrição |
+|-------|-----------|
+| **Admin** | Usuário com privilégios elevados para gestão do sistema |
+| **Adquirente** | Instituição financeira que processa pagamentos (Mercado Pago) |
+| **Authentication** | Validação da identidade do usuário |
+| **Authorization** | Controle de acesso baseado em roles |
+| **Catalog** | Conjunto de produtos disponíveis |
+| **Category** | Classificação de produtos (lanches, bebidas, sobremesas) |
+| **Combo** | Conjunto personalizado: lanche + acompanhamento + bebida + sobremesa |
+| **Customer** | Cliente que realiza pedidos |
+| **Guest** | Cliente não identificado |
+| **Order** | Pedido com itens selecionados |
+| **Order Item** | Produto específico dentro de um pedido |
+| **Payment** | Processamento de pagamento via Mercado Pago |
+| **Product** | Item disponível para venda |
+| **Role** | Papel do usuário (ADMIN, ATENDENTE, GUEST) |
+
+</details>
+
+---
+
+<h2 id="diagramas">📊 Diagramas</h2>
+
+<details>
+<summary>Expandir para mais detalhes</summary>
+
+### Fluxo de Criação de Pedido
+
+![Eventos de domínio - Criação de Pedido](docs/diagrams/order-created.svg)
+
+### Fluxo de Preparação e Entrega
+
+![Eventos de domínio - Preparação e Entrega](docs/diagrams/order-preparing.svg)
+
+</details>
+
+---
+
+<h2 id="deploy">⚙️ Fluxo de Deploy</h2>
+
+<details>
+<summary>Expandir para mais detalhes</summary>
+
+### Pipeline
+
+1. **Pull Request**
+   - Preencher template de pull request adequadamente
+
+2. **Revisão e Aprovação**
+   - Mínimo 1 aprovação de CODEOWNER
+
+3. **Merge para Main**
+
+### Proteções
+
+- Branch `main` protegida
+- Nenhum push direto permitido
+- Todos os checks devem passar
+
+### Ordem de Provisionamento
+
+```
+1. foodcore-infra        (AKS, VNET)
+2. foodcore-db           (Bancos de dados)
+3. foodcore-auth           (Azure Function Authorizer)
+4. foodcore-observability (Serviços de Observabilidade)
+5. foodcore-order            (Microsserviço de pedido)
+6. foodcore-payment            (Microsserviço de pagamento)
+7. foodcore-catalog            (Microsserviço de catálogo)
+```
+
+> ⚠️ Opcionalmente, as pipelines do repositório `foodcore-shared` podem ser executadas para publicação de um novo package. Atualizar os microsserviços para utilazarem a nova versão do pacote.
+
+</details>
+
 <h2 id="instalacao-e-uso">🚀 Instalação e Uso</h2>
 
 ### Pré-requisitos
@@ -201,51 +321,34 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 git clone https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-catalog.git
 cd foodcore-catalog
 
+# Configurar variáveis de ambiente (Docker)
+cp docker/env-example docker/.env
+
 # Subir dependências
-docker-compose -f docker/docker-compose.yml up -d
+./food start:infra
+
+# Configurar variáveis de ambiente (Aplicação)
+cp env-example .env
 
 # Executar aplicação
 ./gradlew bootRun --args='--spring.profiles.active=local'
-
-# Executar testes
-./gradlew test
 ```
 
----
-
-<h2 id="apis">📡 APIs</h2>
-
-### Endpoints Principais
-
-| Método | Endpoint | Ingress Port | Descrição |
-|--------|----------|-----------|
-| `GET` | `/catalog/products` | 443 (Https) | Listar produtos |
-| `GET` | `/catalog/products/{id}` | 443 (Https) | Buscar produto por ID |
-| `POST` | `/catalog/products` | 443 (Https) | Criar produto |
-| `PUT` | `/catalog/products/{id}` | 443 (Https) | Atualizar produto |
-| `DELETE` | `/catalog/products/{id}` | 443 (Https) | Remover produto |
-| `GET` | `/catalog/categories` | 443 (Https) | Listar categorias |
-| `POST` | `/catalog/products/{id}/image` | 443 (Https) | Upload de imagem |
-
-> ⚠️ A URL Base pode ser obtida via output terraform `apim_gateway_url` (foodcore-infra).
-
-### Documentação
-
-- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
-- **OpenAPI**: `http://localhost:8080/v3/api-docs`
-
-> ⚠️ A porta pode mudar em decorrência da variável de ambiente: `SERVER_PORT`.
+> ⚠️ Use o utilitário de linha de comandos `dos2unix` para corrigir problemas de CLRF e LF.
+> Ajuste os arquivos .env conforme necessário.
 
 ---
 
 <h2 id="contribuicao">🤝 Contribuição</h2>
 
-### Fluxo de Deploy
+### Fluxo de Contribuição
 
-1. Abra um Pull Request
-2. Pipeline CI executa testes e análise
-3. Após aprovação, merge para `main`
-4. Pipeline CD faz deploy no AKS
+1. Crie uma branch a partir de `main`
+2. Implemente suas alterações
+3. Execute os testes unitários: `./gradlew test`
+4. Execute os testes de integração (BDD): `./gradlew cucumber`
+5. Abra um Pull Request
+6. Aguarde aprovação de um CODEOWNER
 
 ### Licença
 
@@ -255,5 +358,5 @@ Este projeto está licenciado sob a [MIT License](LICENSE).
 
 <div align="center">
   <strong>FIAP - Pós-graduação em Arquitetura de Software</strong><br>
-  Tech Challenge
+  Tech Challenge 4
 </div>
