@@ -55,9 +55,14 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 
 ### 🎯 Princípios Adotados
 
-- **Clean Architecture**: Domínio independente de frameworks
 - **DDD**: Bounded context de catálogo isolado
-- **CQRS Light**: Separação de comandos e consultas
+- **Clean Architecture**: Domínio independente de frameworks
+- **Separação de responsabilidades**: Cada camada tem responsabilidade bem definida
+- **Independência de frameworks**: Domínio não depende de Spring ou outras bibliotecas
+- **Testabilidade**: Lógica de negócio isolada facilita testes unitários
+- **Inversão de Dependência**: Classes utilizam abstrações, nunca implementações concretas diretamente
+- **Injeção de Dependência**: Classes recebem via construtor os objetos que necessitam utilizar
+- **SAGA Coreografada**: Comunicação assíncrona via eventos
 
 ---
 
@@ -212,19 +217,24 @@ docker-compose -f docker/docker-compose.yml up -d
 
 ### Endpoints Principais
 
-| Método | Endpoint | Descrição |
+| Método | Endpoint | Ingress Port | Descrição |
 |--------|----------|-----------|
-| `GET` | `/api/catalog/products` | Listar produtos |
-| `GET` | `/api/catalog/products/{id}` | Buscar produto por ID |
-| `POST` | `/api/catalog/products` | Criar produto |
-| `PUT` | `/api/catalog/products/{id}` | Atualizar produto |
-| `DELETE` | `/api/catalog/products/{id}` | Remover produto |
-| `GET` | `/api/catalog/categories` | Listar categorias |
-| `POST` | `/api/catalog/products/{id}/image` | Upload de imagem |
+| `GET` | `/catalog/products` | 443 (Https) | Listar produtos |
+| `GET` | `/catalog/products/{id}` | 443 (Https) | Buscar produto por ID |
+| `POST` | `/catalog/products` | 443 (Https) | Criar produto |
+| `PUT` | `/catalog/products/{id}` | 443 (Https) | Atualizar produto |
+| `DELETE` | `/catalog/products/{id}` | 443 (Https) | Remover produto |
+| `GET` | `/catalog/categories` | 443 (Https) | Listar categorias |
+| `POST` | `/catalog/products/{id}/image` | 443 (Https) | Upload de imagem |
+
+> ⚠️ A URL Base pode ser obtida via output terraform `apim_gateway_url` (foodcore-infra).
 
 ### Documentação
 
 - **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **OpenAPI**: `http://localhost:8080/v3/api-docs`
+
+> ⚠️ A porta pode mudar em decorrência da variável de ambiente: `SERVER_PORT`.
 
 ---
 
