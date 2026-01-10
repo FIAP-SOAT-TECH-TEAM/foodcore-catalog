@@ -218,6 +218,7 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 > **Solução**: Aguardar a liberação de recursos de outros pods e reexecutar CI + CD.
 
 </details>
+
 ---
 
 <h2 id="dicionario">📖 Dicionário de Linguagem Ubíqua</h2>
