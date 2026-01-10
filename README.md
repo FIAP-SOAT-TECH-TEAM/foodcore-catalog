@@ -15,14 +15,17 @@ Microsserviço responsável pelo gerenciamento de catálogo de produtos e catego
 
 <div align="center">
   <a href="#visao-geral">Visão Geral</a> •
+  <a href="#apis">APIs</a> •
   <a href="#arquitetura">Arquitetura</a> •
   <a href="#infra">Infraestrutura</a> •
   <a href="#tecnologias">Tecnologias</a> •
-  <a href="#debitos-tecnicos">Débitos Técnicos</a> •
+  <a href="#limitacoes-quota">Limitações de quotas</a> •
+  <a href="#dicionario">Dicionário de linguagem ubíqua</a> •
   <a href="#diagramas-dominio">Diagramas de Domínio</a> •
   <a href="#diagramas-arquitetura">Diagramas de Arquitetura</a> •
+  <a href="#deploy">Fluxo de deploy</a> •
   <a href="#instalacao-e-uso">Instalação e Uso</a> •
-  <a href="#apis">APIs</a> •
+  <a href="#debitos-tecnicos">Débitos Técnicos</a> •
   <a href="#contribuicao">Contribuição</a>
 </div><br>
 
@@ -192,21 +195,10 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 
 ---
 
-<h2 id="debitos-tecnicos">⚠️ Débitos Técnicos</h2>
+<h2 id="limitacoes-quota">📉 Limitações de Quota (Azure for Students)</h2>
 
 <details>
 <summary>Expandir para mais detalhes</summary>
-
-| Débito                           | Descrição                                                                                         | Impacto                                                          |
-| -------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| **Azure Function de Imagens**    | Criar Azure Function para atualização de imagens - remover essa responsabilidade do microsserviço | Separação de responsabilidades                                   |
-| **Separar Estoque**              | Extrair gerenciamento de estoque para microsserviço dedicado (mantido simples por ora)            | Futuro: escalabilidade de estoque                                |
-| **Transactional Outbox Pattern** | Implementar padrão para evitar escrita duplicada na SAGA coreografada                             | Garate síncronia entre atualização do DB e publicação de eventos |
-| **Workload Identity**            | Usar Workload Identity para Pods acessarem recursos Azure (atual: Azure Key Vault Provider)       | Melhora segurança e gestão de credenciais                        |
-| **OpenTelemetry**                | Migrar de Micrometer para OpenTelemetry                                                           | Padronização de observabilidade                                  |
-| **WAF Layer**                    | Implementar camada WAF antes do API Gateway para proteção OWASP TOP 10                            | Segurança adicional                                              |
-
-<h2 id="limitacoes-quota">Limitações de Quota (Azure for Students)</h2>
 
 > A assinatura **Azure for Students** impõe as seguintes restrições:
 >
@@ -226,7 +218,6 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 > **Solução**: Aguardar a liberação de recursos de outros pods e reexecutar CI + CD.
 
 </details>
-
 ---
 
 <h2 id="dicionario">📖 Dicionário de Linguagem Ubíqua</h2>
@@ -407,6 +398,24 @@ cp env-example .env
 
 > ⚠️ Use o utilitário de linha de comandos `dos2unix` para corrigir problemas de CLRF e LF.
 > Ajuste os arquivos .env conforme necessário.
+
+---
+
+<h2 id="debitos-tecnicos">⚠️ Débitos Técnicos</h2>
+
+<details>
+<summary>Expandir para mais detalhes</summary>
+
+| Débito                           | Descrição                                                                                         | Impacto                                                          |
+| -------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Azure Function de Imagens**    | Criar Azure Function para atualização de imagens - remover essa responsabilidade do microsserviço | Separação de responsabilidades                                   |
+| **Separar Estoque**              | Extrair gerenciamento de estoque para microsserviço dedicado (mantido simples por ora)            | Futuro: escalabilidade de estoque                                |
+| **Transactional Outbox Pattern** | Implementar padrão para evitar escrita duplicada na SAGA coreografada                             | Garate síncronia entre atualização do DB e publicação de eventos |
+| **Workload Identity**            | Usar Workload Identity para Pods acessarem recursos Azure (atual: Azure Key Vault Provider)       | Melhora segurança e gestão de credenciais                        |
+| **OpenTelemetry**                | Migrar de Micrometer para OpenTelemetry                                                           | Padronização de observabilidade                                  |
+| **WAF Layer**                    | Implementar camada WAF antes do API Gateway para proteção OWASP TOP 10                            | Segurança adicional                                              |
+
+</details>
 
 ---
 
