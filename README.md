@@ -251,6 +251,8 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 <details>
 <summary>Expandir para mais detalhes</summary>
 
+> ℹ️ Link do Event Strorming no Miro: https://miro.com/app/board/uXjVIAFD_zg=/
+
 ### Fluxo de Criação de Pedido
 
 ![Eventos de domínio - Criação de Pedido](docs/diagrams/order-created.svg)
