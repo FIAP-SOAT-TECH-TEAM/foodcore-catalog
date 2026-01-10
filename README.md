@@ -1,7 +1,7 @@
 # 🍔 FoodCore Catalog
 
 <div align="center">
-    
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=FIAP-SOAT-TECH-TEAM_foodcore-catalog&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=FIAP-SOAT-TECH-TEAM_foodcore-catalog)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=FIAP-SOAT-TECH-TEAM_foodcore-catalog&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=FIAP-SOAT-TECH-TEAM_foodcore-catalog)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=FIAP-SOAT-TECH-TEAM_foodcore-catalog&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=FIAP-SOAT-TECH-TEAM_foodcore-catalog)
@@ -11,21 +11,25 @@
 
 </div>
 
-
 Microsserviço responsável pelo gerenciamento de catálogo de produtos e categorias do sistema FoodCore. Desenvolvido como parte do curso de Arquitetura de Software da FIAP (Tech Challenge).
 
 <div align="center">
   <a href="#visao-geral">Visão Geral</a> •
+  <a href="#apis">APIs</a> •
   <a href="#arquitetura">Arquitetura</a> •
   <a href="#infra">Infraestrutura</a> •
   <a href="#tecnologias">Tecnologias</a> •
-  <a href="#debitos-tecnicos">Débitos Técnicos</a> •
+  <a href="#limitacoes-quota">Limitações de quotas</a> •
+  <a href="#dicionario">Dicionário de linguagem ubíqua</a> •
+  <a href="#diagramas-dominio">Diagramas de Domínio</a> •
+  <a href="#diagramas-arquitetura">Diagramas de Arquitetura</a> •
+  <a href="#deploy">Fluxo de deploy</a> •
   <a href="#instalacao-e-uso">Instalação e Uso</a> •
-  <a href="#apis">APIs</a> •
+  <a href="#debitos-tecnicos">Débitos Técnicos</a> •
   <a href="#contribuicao">Contribuição</a>
 </div><br>
 
-> 📽️ Vídeo de demonstração da arquitetura: [https://www.youtube.com/watch?v=XgUpOKJjqak](https://www.youtube.com/watch?v=XgUpOKJjqak)<br>
+> 📽️ Vídeo de demonstração da arquitetura: [https://youtu.be/k3XbPRxmjCw](https://youtu.be/k3XbPRxmjCw)<br>
 
 ---
 
@@ -40,12 +44,37 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 
 ### Principais Recursos
 
-| Recurso | Descrição |
-|---------|-----------|
-| **Produtos** | Criar, editar, listar e remover produtos |
-| **Categorias** | Organização por tipo de produto |
-| **Imagens** | Upload para Azure Blob Storage |
-| **Busca** | Filtros por categoria, nome, preço |
+| Recurso        | Descrição                                |
+| -------------- | ---------------------------------------- |
+| **Produtos**   | Criar, editar, listar e remover produtos |
+| **Categorias** | Organização por tipo de produto          |
+| **Imagens**    | Upload para Azure Blob Storage           |
+| **Busca**      | Filtros por categoria, nome, preço       |
+
+---
+
+<h2 id="apis">📡 APIs</h2>
+
+### Endpoints Principais
+
+| Método   | Endpoint                       | Ingress Port | Descrição             |
+| -------- | ------------------------------ | ------------ | --------------------- |
+| `GET`    | `/catalog/products`            | 443 (Https)  | Listar produtos       |
+| `GET`    | `/catalog/products/{id}`       | 443 (Https)  | Buscar produto por ID |
+| `POST`   | `/catalog/products`            | 443 (Https)  | Criar produto         |
+| `PUT`    | `/catalog/products/{id}`       | 443 (Https)  | Atualizar produto     |
+| `DELETE` | `/catalog/products/{id}`       | 443 (Https)  | Remover produto       |
+| `GET`    | `/catalog/categories`          | 443 (Https)  | Listar categorias     |
+| `POST`   | `/catalog/products/{id}/image` | 443 (Https)  | Upload de imagem      |
+
+> ⚠️ A URL Base pode ser obtida via output terraform `apim_gateway_url` (foodcore-infra).
+
+### Documentação
+
+- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **OpenAPI**: `http://localhost:8080/v3/api-docs`
+
+> ⚠️ A porta pode mudar em decorrência da variável de ambiente: `SERVER_PORT`.
 
 ---
 
@@ -56,30 +85,35 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 
 ### 🎯 Princípios Adotados
 
-- **Clean Architecture**: Domínio independente de frameworks
 - **DDD**: Bounded context de catálogo isolado
-- **CQRS Light**: Separação de comandos e consultas
+- **Clean Architecture**: Domínio independente de frameworks
+- **Separação de responsabilidades**: Cada camada tem responsabilidade bem definida
+- **Independência de frameworks**: Domínio não depende de Spring ou outras bibliotecas
+- **Testabilidade**: Lógica de negócio isolada facilita testes unitários
+- **Inversão de Dependência**: Classes utilizam abstrações, nunca implementações concretas diretamente
+- **Injeção de Dependência**: Classes recebem via construtor os objetos que necessitam utilizar
+- **SAGA Coreografada**: Comunicação assíncrona via eventos
 
 ---
 
 ### ⚙️ Camadas da Arquitetura
 
-| Camada | Componentes |
-|--------|-------------|
-| **Domínio** | `Product`, `Category`, `Details`, `ImageUrl` |
-| **Aplicação** | Use Cases de produtos e categorias |
-| **Interface** | Controllers REST, Presenters, Gateways |
-| **Infraestrutura** | PostgreSQL, Azure Blob Storage |
+| Camada             | Componentes                                  |
+| ------------------ | -------------------------------------------- |
+| **Domínio**        | `Product`, `Category`, `Details`, `ImageUrl` |
+| **Aplicação**      | Use Cases de produtos e categorias           |
+| **Interface**      | Controllers REST, Presenters, Gateways       |
+| **Infraestrutura** | PostgreSQL, Azure Blob Storage               |
 
 ---
 
 ### 🏗️ Microsserviços do Ecossistema
 
-| Microsserviço | Responsabilidade | Repositório |
-|---------------|------------------|-------------|
-| **foodcore-auth** | Autenticação (Azure Function + Cognito) | [foodcore-auth](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-auth) |
-| **foodcore-order** | Gerenciamento de pedidos | [foodcore-order](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-order) |
-| **foodcore-payment** | Processamento de pagamentos | [foodcore-payment](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-payment) |
+| Microsserviço        | Responsabilidade                        | Repositório                                                                 |
+| -------------------- | --------------------------------------- | --------------------------------------------------------------------------- |
+| **foodcore-auth**    | Autenticação (Azure Function + Cognito) | [foodcore-auth](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-auth)       |
+| **foodcore-order**   | Gerenciamento de pedidos                | [foodcore-order](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-order)     |
+| **foodcore-payment** | Processamento de pagamentos             | [foodcore-payment](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-payment) |
 | **foodcore-catalog** | Catálogo de produtos (este repositório) | [foodcore-catalog](https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-catalog) |
 
 </details>
@@ -93,22 +127,38 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 
 ### Recursos Kubernetes
 
-| Recurso | Descrição |
-|---------|-----------|
-| **Deployment** | Pods com health probes, limites de recursos |
-| **Service** | Exposição interna no cluster |
-| **Ingress** | Roteamento: `/api/catalog/*` |
-| **ConfigMap** | Configurações não sensíveis |
-| **Secrets** | Credenciais (Database, Azure Blob) |
-| **HPA** | Escalabilidade automática |
+| Recurso        | Descrição                                             |
+| -------------- | ----------------------------------------------------- |
+| **Deployment** | Pods com health probes, limites de recursos           |
+| **Service**    | Exposição interna no cluster                          |
+| **Ingress**    | Roteamento via Azure Application Gateway (LB Layer 7) |
+| **ConfigMap**  | Configurações não sensíveis                           |
+| **Secrets**    | Credenciais (Database, Azure Blob)                    |
+| **HPA**        | Escalabilidade automática                             |
+
+- O **Application Gateway** recebe tráfego em um **Frontend IP privado**
+- Roteamento direto para os IPs dos Pods (**Azure CNI + Overlay**)
+- Path exposto: `/catalog`
+
+> ⚠️ Após o deploy (CD), aguarde cerca de **5 minutos** para que o **AGIC** finalize a configuração do Application Gateway.
 
 ### Integrações
 
-| Serviço | Tipo | Descrição |
-|---------|------|-----------|
-| **PostgreSQL** | Síncrona | Persistência de dados |
-| **Azure Blob Storage** | Síncrona | Armazenamento de imagens |
-| **Azure Service Bus** | Assíncrona | Eventos de catálogo |
+| Serviço                | Tipo       | Descrição                |
+| ---------------------- | ---------- | ------------------------ |
+| **PostgreSQL**         | Síncrona   | Persistência de dados    |
+| **Azure Blob Storage** | Síncrona   | Armazenamento de imagens |
+| **Azure Service Bus**  | Assíncrona | Eventos de catálogo      |
+
+### 🔐 Azure Key Vault Provider (CSI)
+
+- Sincroniza secrets do Azure Key Vault com Secrets do Kubernetes
+- Monta volumes CSI com `tmpfs` dentro dos Pods
+- Utiliza o CRD **SecretProviderClass**
+
+> ⚠️ Caso o valor de uma secret seja alterado no Key Vault, é necessário **reiniciar os Pods**, pois variáveis de ambiente são injetadas apenas na inicialização.
+>
+> Referência: <https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-configuration-options>
 
 </details>
 
@@ -120,19 +170,23 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 <summary>Expandir para mais detalhes</summary>
 
 ### Backend
+
 - **Java 21**: Linguagem principal
 - **Spring Boot 3.4**: Framework base
 - **Spring Data JPA**: Persistência
 - **MapStruct / Lombok**: Produtividade
 
 ### Banco de Dados
+
 - **PostgreSQL**: Banco relacional
 - **Liquibase**: Migrations
 
 ### Storage
+
 - **Azure Blob Storage**: Imagens de produtos
 
 ### Qualidade
+
 - **SonarCloud**: Análise estática
 - **JUnit 5 + Mockito**: Testes unitários
 - **Cucumber**: Testes BDD
@@ -141,21 +195,10 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 
 ---
 
-<h2 id="debitos-tecnicos">⚠️ Débitos Técnicos</h2>
+<h2 id="limitacoes-quota">📉 Limitações de Quota (Azure for Students)</h2>
 
 <details>
 <summary>Expandir para mais detalhes</summary>
-
-### 🔴 Alta Prioridade
-
-| Débito | Descrição | Impacto |
-|--------|-----------|---------|
-| **Azure Function de Imagens** | Criar Azure Function para atualização de imagens - remover essa responsabilidade do microsserviço | Separação de responsabilidades |
-| **Separar Estoque** | Extrair gerenciamento de estoque para microsserviço dedicado (mantido simples por ora) | Futuro: escalabilidade de estoque |
-| **Workload Identity** | Usar Workload Identity para Pods (atual: Azure Key Vault Provider) | Segurança |
-| **OpenTelemetry** | Migrar de Zipkin/Micrometer para OpenTelemetry | Padronização |
-
-<h2 id="limitacoes-quota">Limitações de Quota (Azure for Students)</h2>
 
 > A assinatura **Azure for Students** impõe as seguintes restrições:
 >
@@ -168,18 +211,169 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 > Durante o deploy dos microsserviços, Pods podem ficar com status **Pending** e o seguinte erro pode aparecer:
 >
 > <img src=".github/images/error.jpeg" alt="Error" />
+> <img src=".github/images/erroDeploy.jpeg" alt="Error" />
 >
 > **Causa**: O cluster atingiu o limite máximo de VMs permitido pela quota e não há recursos computacionais (CPU/memória) disponíveis nos nós existentes.
 >
 > **Solução**: Aguardar a liberação de recursos de outros pods e reexecutar CI + CD.
 
 </details>
+---
+
+<h2 id="dicionario">📖 Dicionário de Linguagem Ubíqua</h2>
+
+<details>
+<summary>Expandir para mais detalhes</summary>
+
+| Termo              | Descrição                                                            |
+| ------------------ | -------------------------------------------------------------------- |
+| **Admin**          | Usuário com privilégios elevados para gestão do sistema              |
+| **Adquirente**     | Instituição financeira que processa pagamentos (Mercado Pago)        |
+| **Authentication** | Validação da identidade do usuário                                   |
+| **Authorization**  | Controle de acesso baseado em roles                                  |
+| **Catalog**        | Conjunto de produtos disponíveis                                     |
+| **Category**       | Classificação de produtos (lanches, bebidas, sobremesas)             |
+| **Combo**          | Conjunto personalizado: lanche + acompanhamento + bebida + sobremesa |
+| **Customer**       | Cliente que realiza pedidos                                          |
+| **Guest**          | Cliente não identificado                                             |
+| **Order**          | Pedido com itens selecionados                                        |
+| **Order Item**     | Produto específico dentro de um pedido                               |
+| **Payment**        | Processamento de pagamento via Mercado Pago                          |
+| **Product**        | Item disponível para venda                                           |
+| **Role**           | Papel do usuário (ADMIN, ATENDENTE, GUEST)                           |
+
+</details>
 
 ---
+
+<h2 id="diagramas-dominio">📊 Diagramas de Domínio</h2>
+
+> ℹ️ Link do Event Strorming no Miro: https://miro.com/app/board/uXjVIAFD_zg=/
+
+<details>
+<summary>Expandir para mais detalhes</summary>
+
+### Fluxo de Criação de Pedido
+
+![Eventos de domínio - Criação de Pedido](docs/diagrams/order-created.svg)
+
+### Fluxo de Preparação e Entrega
+
+![Eventos de domínio - Preparação e Entrega](docs/diagrams/order-preparing.svg)
+
+</details>
+
+---
+
+<h2 id="diagramas-arquitetura">📊 Diagramas de Arquitetura</h2>
+<details>
+<summary>Expandir para mais detalhes</summary>
+
+### 🎭 Saga Coreografada (Comunicação Assíncrona)
+
+Diagrama de sequência demonstrando o padrão **Choreographed Saga** implementado para transações distribuídas via Azure Service Bus.
+
+**Características:**
+
+- Sem orquestrador central - cada serviço reage a eventos
+- Fluxo principal (Happy Path): Order → Catalog → Payment → Order
+- Fluxo compensatório: Rollback paralelo em caso de cancelamento
+- Timeout: Expiração automática de pagamentos
+
+<img src="docs/diagrams/sequence-diagram.png" alt="Arch Sequencial Diagram" />
+
+---
+
+### 🔄 Comunicação HTTP (Síncrona)
+
+Diagrama de fluxo mapeando as requisições HTTP diretas entre microsserviços.
+
+**Fluxos:**
+
+- Clientes → API Gateway → Microsserviços
+- Order ↔ Catalog: Validação de produtos
+- Order ↔ Payment: Gestão de pagamentos
+- Payment ↔ Mercado Pago: Integração externa
+
+```mermaid
+flowchart TB
+    subgraph EXTERNAL["☁️ SERVIÇOS EXTERNOS"]
+        direction TB
+        MP[("🏦 Mercado Pago API")]
+    end
+
+    subgraph INTERNAL["🏠 MICROSSERVIÇOS INTERNOS"]
+        direction TB
+
+        subgraph ORDER_SVC["📦 Order Service"]
+            ORDER_API["/api/v1/orders"]
+        end
+
+        subgraph CATALOG_SVC["📚 Catalog Service"]
+            CATALOG_API["/api/v1/products"]
+        end
+
+        subgraph PAYMENT_SVC["💳 Payment Service"]
+            PAYMENT_API["/api/v1/payments"]
+        end
+    end
+
+    %% FLUXO SAGA COREOGRAFADA (Assíncrono)
+    %% Order inicia o processo disparando eventos
+    ORDER_API -..->|"Evento / Async"| CATALOG_API
+    ORDER_API -..->|"Evento / Async"| PAYMENT_API
+
+    %% INTEGRAÇÃO EXTERNA (Síncrona)
+    PAYMENT_API -->|"HTTPS/mTLS"| MP
+```
+
+</details>
+
+---
+
+<h2 id="deploy">⚙️ Fluxo de Deploy</h2>
+
+<details>
+<summary>Expandir para mais detalhes</summary>
+
+### Pipeline
+
+1. **Pull Request**
+
+   - Preencher template de pull request adequadamente
+
+2. **Revisão e Aprovação**
+
+   - Mínimo 1 aprovação de CODEOWNER
+
+3. **Merge para Main**
+
+### Proteções
+
+- Branch `main` protegida
+- Nenhum push direto permitido
+- Todos os checks devem passar
+
+### Ordem de Provisionamento
+
+```
+1. foodcore-infra        (AKS, VNET)
+2. foodcore-db           (Bancos de dados)
+3. foodcore-auth           (Azure Function Authorizer)
+4. foodcore-observability (Serviços de Observabilidade)
+5. foodcore-order            (Microsserviço de pedido)
+6. foodcore-payment            (Microsserviço de pagamento)
+7. foodcore-catalog            (Microsserviço de catálogo)
+```
+
+> ⚠️ Opcionalmente, as pipelines do repositório `foodcore-shared` podem ser executadas para publicação de um novo package. Atualizar os microsserviços para utilazarem a nova versão do pacote.
+
+</details>
 
 <h2 id="instalacao-e-uso">🚀 Instalação e Uso</h2>
 
 ### Pré-requisitos
+
 - Java 21
 - Docker e Docker Compose
 - Gradle
@@ -191,45 +385,52 @@ O **FoodCore Catalog** é o microsserviço responsável por:
 git clone https://github.com/FIAP-SOAT-TECH-TEAM/foodcore-catalog.git
 cd foodcore-catalog
 
+# Configurar variáveis de ambiente (Docker)
+cp docker/env-example docker/.env
+
 # Subir dependências
-docker-compose -f docker/docker-compose.yml up -d
+./food start:infra
+
+# Configurar variáveis de ambiente (Aplicação)
+cp env-example .env
 
 # Executar aplicação
 ./gradlew bootRun --args='--spring.profiles.active=local'
-
-# Executar testes
-./gradlew test
 ```
+
+> ⚠️ Use o utilitário de linha de comandos `dos2unix` para corrigir problemas de CLRF e LF.
+> Ajuste os arquivos .env conforme necessário.
 
 ---
 
-<h2 id="apis">📡 APIs</h2>
+<h2 id="debitos-tecnicos">⚠️ Débitos Técnicos</h2>
 
-### Endpoints Principais
+<details>
+<summary>Expandir para mais detalhes</summary>
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/api/catalog/products` | Listar produtos |
-| `GET` | `/api/catalog/products/{id}` | Buscar produto por ID |
-| `POST` | `/api/catalog/products` | Criar produto |
-| `PUT` | `/api/catalog/products/{id}` | Atualizar produto |
-| `DELETE` | `/api/catalog/products/{id}` | Remover produto |
-| `GET` | `/api/catalog/categories` | Listar categorias |
-| `POST` | `/api/catalog/products/{id}/image` | Upload de imagem |
+| Débito                           | Descrição                                                                                         | Impacto                                                          |
+| -------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Azure Function de Imagens**    | Criar Azure Function para atualização de imagens - remover essa responsabilidade do microsserviço | Separação de responsabilidades                                   |
+| **Separar Estoque**              | Extrair gerenciamento de estoque para microsserviço dedicado (mantido simples por ora)            | Futuro: escalabilidade de estoque                                |
+| **Transactional Outbox Pattern** | Implementar padrão para evitar escrita duplicada na SAGA coreografada                             | Garate síncronia entre atualização do DB e publicação de eventos |
+| **Workload Identity**            | Usar Workload Identity para Pods acessarem recursos Azure (atual: Azure Key Vault Provider)       | Melhora segurança e gestão de credenciais                        |
+| **OpenTelemetry**                | Migrar de Micrometer para OpenTelemetry                                                           | Padronização de observabilidade                                  |
+| **WAF Layer**                    | Implementar camada WAF antes do API Gateway para proteção OWASP TOP 10                            | Segurança adicional                                              |
 
-### Documentação
-- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+</details>
 
 ---
 
 <h2 id="contribuicao">🤝 Contribuição</h2>
 
-### Fluxo de Deploy
+### Fluxo de Contribuição
 
-1. Abra um Pull Request
-2. Pipeline CI executa testes e análise
-3. Após aprovação, merge para `main`
-4. Pipeline CD faz deploy no AKS
+1. Crie uma branch a partir de `main`
+2. Implemente suas alterações
+3. Execute os testes unitários: `./gradlew test`
+4. Execute os testes de integração (BDD): `./gradlew cucumber`
+5. Abra um Pull Request
+6. Aguarde aprovação de um CODEOWNER
 
 ### Licença
 
@@ -239,5 +440,5 @@ Este projeto está licenciado sob a [MIT License](LICENSE).
 
 <div align="center">
   <strong>FIAP - Pós-graduação em Arquitetura de Software</strong><br>
-  Tech Challenge
+  Tech Challenge 4
 </div>
